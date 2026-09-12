@@ -1,0 +1,7718 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LifePath AI - Hackathon Prototype</title>
+
+<style>
+:root{
+  --yellow:#ffd400;
+  --yellow2:#ffe66b;
+  --yellowSoft:#fff8d7;
+  --black:#171717;
+  --black2:#252525;
+  --gray:#777;
+  --light:#f5f5f5;
+  --white:#ffffff;
+  --border:#e7e7e7;
+  --green:#1fb978;
+  --greenSoft:#def8ec;
+  --red:#ed5353;
+  --redSoft:#ffe8e8;
+  --blue:#3b70ff;
+  --shadow:0 22px 60px rgba(0,0,0,.09);
+}
+
+*{
+  box-sizing:border-box;
+}
+
+html{
+  scroll-behavior:smooth;
+}
+
+body{
+  margin:0;
+  font-family:Tahoma,"Segoe UI",sans-serif;
+  color:var(--black);
+  background:
+    radial-gradient(circle at 8% 0%,#fff4ad 0%,transparent 25%),
+    #f5f5f5;
+}
+
+button,
+input,
+select,
+textarea{
+  font-family:inherit;
+}
+
+button{
+  cursor:pointer;
+}
+
+button:active{
+  transform:scale(.98);
+}
+
+button:disabled{
+  opacity:.3;
+  cursor:not-allowed;
+}
+
+.topbar{
+  height:72px;
+  position:sticky;
+  top:0;
+  z-index:100;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 5%;
+  background:rgba(255,255,255,.92);
+  backdrop-filter:blur(18px);
+  border-bottom:1px solid rgba(0,0,0,.06);
+}
+
+.brand{
+  display:flex;
+  align-items:center;
+  gap:11px;
+}
+
+.brand-logo{
+  width:43px;
+  height:43px;
+  display:grid;
+  place-items:center;
+  background:var(--yellow);
+  border-radius:14px;
+  font-size:20px;
+  font-weight:900;
+}
+
+.brand strong,
+.brand span{
+  display:block;
+}
+
+.brand strong{
+  font-size:14px;
+}
+
+.brand span{
+  margin-top:2px;
+  color:#999;
+  font-size:9px;
+}
+
+.mode-switch{
+  display:flex;
+  padding:4px;
+  background:#ececec;
+  border-radius:15px;
+}
+
+.mode-btn{
+  border:0;
+  padding:8px 15px;
+  border-radius:11px;
+  background:transparent;
+  font-size:10px;
+  font-weight:800;
+}
+
+.mode-btn.active{
+  color:white;
+  background:var(--black);
+}
+
+.app{
+  width:min(100%,1180px);
+  margin:auto;
+}
+
+.page{
+  display:none;
+  min-height:calc(100vh - 72px);
+  padding:35px 27px 100px;
+  animation:pageIn .3s ease;
+}
+
+.page.active{
+  display:block;
+}
+
+@keyframes pageIn{
+  from{
+    opacity:0;
+    transform:translateY(10px);
+  }
+
+  to{
+    opacity:1;
+    transform:none;
+  }
+}
+
+.eyebrow{
+  color:#888;
+  font-size:8px;
+  font-weight:900;
+  letter-spacing:1.3px;
+}
+
+.yellow-label{
+  color:var(--yellow);
+  font-size:8px;
+  font-weight:900;
+  letter-spacing:1px;
+}
+
+.page-header{
+  display:grid;
+  grid-template-columns:50px 1fr auto;
+  align-items:center;
+  gap:11px;
+  margin-bottom:24px;
+}
+
+.page-header h2{
+  margin:2px 0 0;
+  font-size:26px;
+}
+
+.back-btn,
+.icon-btn{
+  width:45px;
+  height:45px;
+  border:1px solid var(--border);
+  border-radius:14px;
+  background:white;
+  font-size:18px;
+}
+
+.edit-btn{
+  border:1px solid var(--border);
+  border-radius:13px;
+  padding:9px 13px;
+  background:white;
+  font-size:9px;
+  font-weight:900;
+}
+
+.primary-btn,
+.secondary-btn,
+.black-btn{
+  border:0;
+  border-radius:14px;
+  font-weight:900;
+  transition:.2s;
+}
+
+.primary-btn{
+  padding:12px 19px;
+  background:var(--yellow);
+  color:var(--black);
+}
+
+.primary-btn:hover{
+  transform:translateY(-2px);
+  box-shadow:0 12px 30px rgba(255,212,0,.28);
+}
+
+.primary-btn.big,
+.black-btn.big{
+  width:100%;
+  min-height:54px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+}
+
+.secondary-btn{
+  padding:11px 16px;
+  background:#f0f0f0;
+}
+
+.black-btn{
+  padding:12px 19px;
+  color:white;
+  background:var(--black);
+}
+
+.hero{
+  padding:65px 0 34px;
+}
+
+.hero-badge{
+  display:inline-block;
+  padding:6px 12px;
+  border-radius:50px;
+  background:var(--yellow);
+  font-size:9px;
+  font-weight:900;
+}
+
+.hero h1{
+  margin:15px 0;
+  font-size:clamp(45px,7vw,73px);
+  line-height:1.04;
+  letter-spacing:-3px;
+}
+
+.hero h1 span{
+  position:relative;
+}
+
+.hero h1 span::after{
+  content:"";
+  position:absolute;
+  left:0;
+  right:0;
+  bottom:5px;
+  height:10px;
+  border-radius:30px;
+  background:var(--yellow);
+  z-index:-1;
+}
+
+.hero p{
+  max-width:620px;
+  margin:0;
+  color:#777;
+  font-size:13px;
+  line-height:1.8;
+}
+
+.start-card{
+  position:relative;
+  overflow:hidden;
+  padding:38px;
+  border-radius:32px;
+  color:white;
+  background:linear-gradient(145deg,#111,#252525);
+  box-shadow:0 30px 80px rgba(0,0,0,.16);
+}
+
+.start-glow{
+  position:absolute;
+  top:-180px;
+  right:-160px;
+  width:310px;
+  height:310px;
+  border-radius:50%;
+  background:var(--yellow);
+}
+
+.start-icon{
+  width:68px;
+  height:68px;
+  display:grid;
+  place-items:center;
+  margin-bottom:27px;
+  border-radius:20px;
+  color:var(--black);
+  background:var(--yellow);
+  font-size:31px;
+}
+
+.start-card h2{
+  margin:5px 0;
+  font-size:29px;
+}
+
+.start-card p{
+  max-width:590px;
+  color:#aaa;
+  font-size:11px;
+  line-height:1.8;
+}
+
+.start-card .primary-btn{
+  max-width:330px;
+  margin-top:20px;
+}
+
+.home-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:11px;
+  margin-top:15px;
+}
+
+.home-feature{
+  padding:20px;
+  border:1px solid var(--border);
+  border-radius:20px;
+  background:white;
+}
+
+.home-feature>div{
+  font-size:25px;
+}
+
+.home-feature strong,
+.home-feature span{
+  display:block;
+}
+
+.home-feature strong{
+  margin-top:7px;
+  font-size:11px;
+}
+
+.home-feature span{
+  margin-top:2px;
+  color:#999;
+  font-size:8px;
+}
+
+.info-banner{
+  margin-bottom:13px;
+  padding:13px 16px;
+  border:1px solid #ffe26c;
+  border-radius:15px;
+  background:var(--yellowSoft);
+  font-size:10px;
+}
+
+.info-tabs{
+  display:flex;
+  gap:7px;
+  overflow-x:auto;
+  scrollbar-width:none;
+}
+
+.info-tab{
+  min-width:108px;
+  padding:12px 10px;
+  border:1px solid var(--border);
+  border-radius:16px;
+  color:#777;
+  background:white;
+  font-size:9px;
+}
+
+.info-tab span{
+  display:block;
+  margin-bottom:4px;
+  font-size:21px;
+}
+
+.info-tab.active{
+  color:white;
+  border-color:var(--black);
+  background:var(--black);
+}
+
+.form-card{
+  display:none;
+  margin-top:14px;
+  padding:25px;
+  border:1px solid var(--border);
+  border-radius:25px;
+  background:white;
+}
+
+.form-card.active{
+  display:block;
+}
+
+.form-heading{
+  display:flex;
+  align-items:center;
+  gap:11px;
+  margin-bottom:20px;
+}
+
+.step-number{
+  width:38px;
+  height:38px;
+  display:grid;
+  place-items:center;
+  border-radius:11px;
+  background:var(--yellow);
+  font-weight:900;
+}
+
+.form-heading h3,
+.form-heading p{
+  margin:0;
+}
+
+.form-heading h3{
+  font-size:15px;
+}
+
+.form-heading p{
+  color:#999;
+  font-size:9px;
+}
+
+.form-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:15px;
+}
+
+.form-grid label{
+  font-size:10px;
+  font-weight:700;
+}
+
+.form-grid .full{
+  grid-column:1/-1;
+}
+
+input,
+select,
+textarea{
+  width:100%;
+  margin-top:5px;
+  padding:12px 13px;
+  outline:0;
+  border:1px solid #ddd;
+  border-radius:13px;
+  background:#fafafa;
+}
+
+input:focus,
+select:focus,
+textarea:focus{
+  border-color:var(--yellow);
+  background:white;
+  box-shadow:0 0 0 4px rgba(255,212,0,.12);
+}
+
+.choice-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:9px;
+}
+
+.choice-card{
+  display:flex;
+  align-items:center;
+  gap:9px;
+  padding:14px;
+  border:1px solid var(--border);
+  border-radius:15px;
+  font-size:10px;
+  font-weight:700;
+}
+
+.choice-card input{
+  width:auto;
+  margin:0;
+}
+
+.choice-card span{
+  font-size:21px;
+}
+
+.update-button{
+  max-width:360px;
+  margin:17px 0 0 auto;
+}
+
+.road-profile{
+  display:grid;
+  grid-template-columns:auto 1fr auto;
+  align-items:center;
+  gap:17px;
+  padding:20px;
+  border-radius:23px;
+  color:white;
+  background:linear-gradient(135deg,#111,#292929);
+}
+
+.road-profile-main{
+  display:flex;
+  align-items:center;
+  gap:11px;
+}
+
+.road-avatar{
+  width:52px;
+  height:52px;
+  display:grid;
+  place-items:center;
+  border-radius:16px;
+  color:var(--black);
+  background:var(--yellow);
+  font-size:20px;
+  font-weight:900;
+}
+
+.road-profile h3,
+.road-profile p{
+  margin:0;
+}
+
+.road-profile p{
+  color:#aaa;
+  font-size:9px;
+}
+
+.profile-badges{
+  display:flex;
+  flex-wrap:wrap;
+  gap:6px;
+}
+
+.profile-badges span{
+  padding:6px 9px;
+  border-radius:50px;
+  background:rgba(255,255,255,.08);
+  font-size:8px;
+}
+
+.road-points{
+  padding:9px 13px;
+  border-radius:13px;
+  background:rgba(255,255,255,.08);
+}
+
+.road-points small,
+.road-points strong{
+  display:block;
+}
+
+.road-points small{
+  color:var(--yellow);
+  font-size:7px;
+}
+
+.road-points strong{
+  font-size:17px;
+}
+
+.road-shortcuts{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:9px;
+  margin-top:10px;
+}
+
+.shortcut-card{
+  display:grid;
+  grid-template-columns:38px 1fr auto;
+  align-items:center;
+  gap:10px;
+  padding:13px;
+  text-align:left;
+  border:1px solid var(--border);
+  border-radius:16px;
+  background:white;
+}
+
+.shortcut-card>span{
+  font-size:22px;
+}
+
+.shortcut-card strong,
+.shortcut-card small{
+  display:block;
+}
+
+.shortcut-card strong{
+  font-size:10px;
+}
+
+.shortcut-card small{
+  color:#999;
+  font-size:7px;
+}
+
+.year-control{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-end;
+  margin:36px 0 15px;
+}
+
+.year-control h2{
+  margin:2px 0;
+}
+
+.year-control p{
+  margin:0;
+  color:#999;
+  font-size:9px;
+}
+
+.year-control-right{
+  display:flex;
+  align-items:center;
+  gap:7px;
+}
+
+.year-arrow{
+  width:38px;
+  height:38px;
+  border:1px solid #ddd;
+  border-radius:12px;
+  background:white;
+  font-weight:900;
+}
+
+.current-year-label{
+  min-width:77px;
+  padding:9px 12px;
+  border-radius:12px;
+  color:white;
+  background:var(--black);
+  text-align:center;
+  font-size:12px;
+  font-weight:900;
+}
+
+.roadmap-workspace{
+  display:grid;
+  grid-template-columns:minmax(0,1.65fr) minmax(300px,.85fr);
+  gap:13px;
+  align-items:start;
+}
+
+.roadmap-main-column{
+  min-width:0;
+}
+
+.roadmap-window{
+  overflow:hidden;
+  border:1px solid var(--border);
+  border-radius:27px;
+  background:white;
+}
+
+.roadmap-track{
+  display:flex;
+  width:200%;
+  transition:transform .5s cubic-bezier(.2,.8,.2,1);
+}
+
+.year-panel{
+  width:50%;
+  flex-shrink:0;
+  padding:24px;
+}
+
+.year-panel-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:24px;
+  padding-bottom:18px;
+  border-bottom:1px solid #eee;
+}
+
+.year-panel-header span{
+  color:#999;
+  font-size:8px;
+  font-weight:900;
+  letter-spacing:1px;
+}
+
+.year-panel-header h2{
+  margin:1px 0;
+  font-size:32px;
+}
+
+.year-panel-header p{
+  margin:0;
+  color:#999;
+  font-size:9px;
+}
+
+.year-status{
+  padding:7px 11px;
+  border-radius:50px;
+  font-size:8px;
+  font-weight:900;
+}
+
+.year-status.current{
+  background:var(--yellow);
+}
+
+.year-status.future{
+  color:white;
+  background:var(--black);
+}
+
+.quarter-block{
+  position:relative;
+  display:grid;
+  grid-template-columns:72px 1fr;
+  gap:14px;
+  padding-bottom:32px;
+}
+
+.quarter-block::before{
+  content:"";
+  position:absolute;
+  left:35px;
+  top:45px;
+  bottom:-4px;
+  width:2px;
+  background:#e4e4e4;
+}
+
+.quarter-block.last::before{
+  display:none;
+}
+
+.quarter-marker{
+  position:relative;
+  z-index:2;
+  height:68px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  border:1px solid #ddd;
+  border-radius:19px;
+  background:white;
+  box-shadow:0 7px 20px rgba(0,0,0,.05);
+}
+
+.quarter-marker strong{
+  color:#999;
+  font-size:7px;
+}
+
+.quarter-marker span{
+  font-size:17px;
+  font-weight:900;
+}
+
+.quarter-heading{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  margin-bottom:9px;
+}
+
+.quarter-heading h3{
+  margin:3px 0 0;
+  font-size:14px;
+}
+
+.quarter-tag{
+  display:inline-block;
+  padding:3px 7px;
+  border-radius:50px;
+  color:#705c00;
+  background:var(--yellowSoft);
+  font-size:6px;
+  font-weight:900;
+}
+
+.quarter-tag.urgent{
+  color:white;
+  background:var(--black);
+}
+
+.quarter-tag.monitor{
+  color:#087044;
+  background:#def8ec;
+}
+
+.quarter-tag.prepare{
+  color:#2e58bb;
+  background:#e5ecff;
+}
+
+.quarter-number{
+  color:#ccc;
+  font-size:21px;
+  font-weight:900;
+}
+
+.recommend-card{
+  display:grid;
+  grid-template-columns:53px 1fr;
+  gap:13px;
+  padding:17px;
+  border:1px solid #e7e7e7;
+  border-radius:20px;
+  background:#fafafa;
+}
+
+.recommend-card.highlight{
+  border-color:#ffe05a;
+  background:linear-gradient(145deg,#fffdf3,#fff9d1);
+  box-shadow:0 15px 40px rgba(0,0,0,.07);
+}
+
+.product-icon{
+  width:50px;
+  height:50px;
+  display:grid;
+  place-items:center;
+  border-radius:15px;
+  background:var(--yellow);
+  font-size:24px;
+}
+
+.product-icon.health{
+  background:#ffe5ea;
+}
+
+.product-icon.family{
+  background:#e5ebff;
+}
+
+.ai-match{
+  color:#957b00;
+  font-size:7px;
+  font-weight:900;
+}
+
+.product-content h3{
+  margin:2px 0;
+  font-size:15px;
+}
+
+.product-content p{
+  margin:2px 0;
+  color:#777;
+  font-size:9px;
+  line-height:1.6;
+}
+
+.reason-list{
+  display:flex;
+  flex-wrap:wrap;
+  gap:5px;
+  margin-top:10px;
+}
+
+.reason-list span{
+  padding:4px 7px;
+  border-radius:50px;
+  color:#777;
+  background:white;
+  font-size:7px;
+}
+
+.product-bottom{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  margin-top:13px;
+  padding-top:12px;
+  border-top:1px solid rgba(0,0,0,.07);
+}
+
+.product-bottom small,
+.product-bottom strong{
+  display:block;
+}
+
+.product-bottom small{
+  color:#999;
+  font-size:7px;
+}
+
+.product-bottom strong{
+  font-size:11px;
+}
+
+.product-detail-btn{
+  border:0;
+  padding:9px 12px;
+  border-radius:11px;
+  color:white;
+  background:var(--black);
+  font-size:8px;
+  font-weight:900;
+}
+
+.road-task{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin-top:8px;
+  padding:12px;
+  border-radius:15px;
+  background:#f5f5f5;
+}
+
+.task-check{
+  width:33px;
+  height:33px;
+  display:grid;
+  place-items:center;
+  border-radius:10px;
+  color:#087044;
+  background:#daf6e9;
+  font-size:11px;
+  font-weight:900;
+}
+
+.task-check.dark{
+  color:var(--yellow);
+  background:var(--black);
+  font-size:8px;
+}
+
+.road-task strong{
+  display:block;
+  font-size:9px;
+}
+
+.road-task p{
+  margin:2px 0 0;
+  color:#999;
+  font-size:7px;
+}
+
+.road-insight-card{
+  display:grid;
+  grid-template-columns:45px 1fr auto;
+  align-items:center;
+  gap:11px;
+  padding:15px;
+  border:1px solid #e6e6e6;
+  border-radius:18px;
+  background:#f8f8f8;
+}
+
+.road-insight-card.yellow{
+  border-color:#ffe36c;
+  background:var(--yellowSoft);
+}
+
+.road-insight-icon{
+  width:43px;
+  height:43px;
+  display:grid;
+  place-items:center;
+  border-radius:13px;
+  background:white;
+  font-size:21px;
+}
+
+.road-insight-card span{
+  color:#999;
+  font-size:6px;
+  font-weight:900;
+}
+
+.road-insight-card h3{
+  margin:2px 0;
+  font-size:11px;
+}
+
+.road-insight-card p{
+  margin:0;
+  color:#777;
+  font-size:8px;
+}
+
+.road-insight-card button{
+  border:0;
+  background:transparent;
+  font-size:8px;
+  font-weight:900;
+}
+
+.review-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:7px;
+}
+
+.review-card{
+  padding:14px;
+  border:1px solid #eee;
+  border-radius:16px;
+  background:#fafafa;
+}
+
+.review-card span{
+  font-size:21px;
+}
+
+.review-card strong{
+  display:block;
+  margin-top:5px;
+  font-size:9px;
+}
+
+.review-card p{
+  margin:2px 0;
+  color:#999;
+  font-size:7px;
+}
+
+.benefit-side{
+  position:sticky;
+  top:88px;
+  overflow:hidden;
+  padding:22px;
+  border-radius:27px;
+  color:white;
+  background:
+    radial-gradient(circle at 100% 0%,rgba(255,212,0,.22),transparent 35%),
+    linear-gradient(145deg,#101010,#1e1e1e);
+  box-shadow:0 25px 60px rgba(0,0,0,.15);
+}
+
+.benefit-side.flash{
+  animation:benefitFlash .8s ease;
+}
+
+@keyframes benefitFlash{
+  0%{
+    box-shadow:0 0 0 0 rgba(255,212,0,.8);
+  }
+
+  50%{
+    box-shadow:0 0 0 10px rgba(255,212,0,.2);
+  }
+
+  100%{
+    box-shadow:0 25px 60px rgba(0,0,0,.15);
+  }
+}
+
+.benefit-side-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  gap:12px;
+}
+
+.benefit-side-header h2{
+  margin:2px 0;
+  font-size:22px;
+}
+
+.benefit-side-header p{
+  margin:0;
+  color:#999;
+  font-size:8px;
+  line-height:1.6;
+}
+
+.benefit-car{
+  width:47px;
+  height:47px;
+  display:grid;
+  place-items:center;
+  border-radius:14px;
+  color:var(--black);
+  background:var(--yellow);
+  font-size:23px;
+}
+
+.benefit-policy-tabs{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:5px;
+  margin-top:17px;
+  padding:4px;
+  border-radius:13px;
+  background:rgba(255,255,255,.06);
+}
+
+.benefit-policy-tab{
+  padding:8px;
+  border:0;
+  border-radius:10px;
+  color:#777;
+  background:transparent;
+  font-size:8px;
+  font-weight:900;
+}
+
+.benefit-policy-tab.active{
+  color:var(--black);
+  background:var(--yellow);
+}
+
+.benefit-big{
+  margin-top:12px;
+  padding:17px;
+  border-radius:19px;
+  color:var(--black);
+  background:linear-gradient(135deg,var(--yellow2),var(--yellow));
+}
+
+.benefit-big span,
+.benefit-big strong,
+.benefit-big p{
+  display:block;
+}
+
+.benefit-big span{
+  font-size:8px;
+  font-weight:900;
+}
+
+.benefit-big strong{
+  font-size:43px;
+  line-height:1;
+}
+
+.benefit-big p{
+  margin:3px 0 0;
+  font-size:7px;
+}
+
+.benefit-saving{
+  margin-top:7px;
+  padding:14px;
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:16px;
+  background:rgba(255,255,255,.05);
+}
+
+.benefit-saving span,
+.benefit-saving strong,
+.benefit-saving p{
+  display:block;
+}
+
+.benefit-saving span{
+  color:#999;
+  font-size:7px;
+}
+
+.benefit-saving strong{
+  color:var(--yellow);
+  font-size:22px;
+}
+
+.benefit-saving p{
+  margin:0;
+  color:#666;
+  font-size:7px;
+}
+
+.benefit-year-title{
+  margin:20px 0 9px;
+}
+
+.benefit-year-title span,
+.benefit-year-title strong{
+  display:block;
+}
+
+.benefit-year-title span{
+  color:var(--yellow);
+  font-size:6px;
+  font-weight:900;
+  letter-spacing:1px;
+}
+
+.benefit-year-title strong{
+  margin-top:2px;
+  font-size:10px;
+}
+
+.benefit-levels{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:7px;
+}
+
+.benefit-level{
+  position:relative;
+  min-height:145px;
+  padding:13px;
+  border:1px solid #333;
+  border-radius:16px;
+  background:rgba(255,255,255,.035);
+}
+
+.benefit-level.current{
+  border-color:rgba(255,212,0,.7);
+  background:rgba(255,212,0,.08);
+}
+
+.benefit-level.locked{
+  opacity:.48;
+}
+
+.you-are-here{
+  position:absolute;
+  top:7px;
+  right:7px;
+  padding:3px 5px;
+  border-radius:50px;
+  color:var(--black);
+  background:var(--yellow);
+  font-size:5px;
+  font-weight:900;
+}
+
+.benefit-level-top{
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+
+.benefit-check{
+  width:32px;
+  height:32px;
+  display:grid;
+  place-items:center;
+  border-radius:10px;
+  background:rgba(255,255,255,.08);
+}
+
+.benefit-level.current .benefit-check{
+  color:var(--black);
+  background:var(--yellow);
+}
+
+.benefit-level-top span,
+.benefit-level-top strong{
+  display:block;
+}
+
+.benefit-level-top span{
+  color:#777;
+  font-size:6px;
+}
+
+.benefit-level-top strong{
+  font-size:15px;
+}
+
+.benefit-rewards{
+  display:flex;
+  flex-direction:column;
+  gap:4px;
+  margin-top:11px;
+}
+
+.benefit-rewards span{
+  color:#aaa;
+  font-size:7px;
+}
+
+.next-benefit-card{
+  margin-top:9px;
+  padding:15px;
+  border-radius:17px;
+  color:var(--black);
+  background:white;
+}
+
+.next-benefit-card>span{
+  color:#999;
+  font-size:6px;
+  font-weight:900;
+}
+
+.next-benefit-card h3{
+  margin:2px 0;
+  font-size:18px;
+}
+
+.next-benefit-card p{
+  margin:0;
+  color:#777;
+  font-size:8px;
+}
+
+.next-saving{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-top:11px;
+  padding-top:10px;
+  border-top:1px solid #eee;
+}
+
+.next-saving small{
+  color:#999;
+  font-size:7px;
+}
+
+.next-saving strong{
+  color:#c3a100;
+  font-size:14px;
+}
+
+.benefit-ai{
+  display:grid;
+  grid-template-columns:37px 1fr;
+  gap:9px;
+  margin-top:8px;
+  padding:12px;
+  border-radius:15px;
+  background:rgba(255,255,255,.05);
+}
+
+.benefit-ai>div{
+  width:35px;
+  height:35px;
+  display:grid;
+  place-items:center;
+  border-radius:10px;
+  color:var(--yellow);
+  background:#000;
+  font-size:7px;
+  font-weight:900;
+}
+
+.benefit-ai p{
+  margin:0;
+  color:#aaa;
+  font-size:7px;
+  line-height:1.6;
+}
+
+.benefit-chat-btn{
+  width:100%;
+  margin-top:8px;
+  padding:11px;
+  border:0;
+  border-radius:13px;
+  color:var(--black);
+  background:var(--yellow);
+  font-size:8px;
+  font-weight:900;
+}
+
+.benefit-disclaimer{
+  display:block;
+  margin-top:8px;
+  color:#555;
+  font-size:6px;
+  line-height:1.5;
+}
+
+.roadmap-bottom{
+  display:grid;
+  grid-template-columns:auto 1fr auto;
+  align-items:center;
+  gap:10px;
+  margin-top:12px;
+}
+
+.road-bottom-btn{
+  border:1px solid #ddd;
+  border-radius:12px;
+  padding:10px 13px;
+  background:white;
+  font-size:8px;
+  font-weight:900;
+}
+
+.road-bottom-btn.primary{
+  color:white;
+  border-color:var(--black);
+  background:var(--black);
+}
+
+.road-scroll-hint{
+  color:#999;
+  font-size:8px;
+  text-align:center;
+}
+
+.chat-fab{
+  position:fixed;
+  right:max(24px,calc((100vw - 1160px)/2));
+  bottom:24px;
+  z-index:50;
+  width:60px;
+  height:60px;
+  border:0;
+  border-radius:19px;
+  background:var(--yellow);
+  box-shadow:0 14px 40px rgba(0,0,0,.18);
+  font-size:25px;
+}
+
+.chat-fab span{
+  position:absolute;
+  right:-4px;
+  top:-4px;
+  width:20px;
+  height:20px;
+  display:grid;
+  place-items:center;
+  border-radius:50%;
+  color:white;
+  background:var(--red);
+  font-size:7px;
+}
+
+.survey-fab{
+  position:fixed;
+  left:max(24px,calc((100vw - 1160px)/2));
+  bottom:24px;
+  z-index:49;
+  border:0;
+  padding:11px 16px;
+  border-radius:14px;
+  color:white;
+  background:var(--black);
+  box-shadow:0 14px 40px rgba(0,0,0,.16);
+  font-size:9px;
+  font-weight:900;
+}
+
+.dashboard-hero{
+  display:grid;
+  grid-template-columns:1fr auto;
+  align-items:center;
+  gap:20px;
+  padding:27px;
+  border-radius:27px;
+  color:white;
+  background:
+    radial-gradient(circle at 90% 10%,rgba(255,212,0,.25),transparent 35%),
+    var(--black);
+}
+
+.dashboard-hero h2{
+  margin:5px 0;
+  font-size:25px;
+}
+
+.dashboard-hero p{
+  max-width:650px;
+  margin:0;
+  color:#aaa;
+  font-size:9px;
+  line-height:1.7;
+}
+
+.dashboard-score{
+  width:115px;
+  height:115px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  border-radius:50%;
+  color:var(--black);
+  background:var(--yellow);
+}
+
+.dashboard-score span{
+  font-size:7px;
+  font-weight:900;
+}
+
+.dashboard-score strong{
+  font-size:27px;
+}
+
+.dashboard-score small{
+  font-size:6px;
+}
+
+.dashboard-grid{
+  display:grid;
+  grid-template-columns:1.1fr .9fr;
+  gap:12px;
+  margin-top:13px;
+}
+
+.dashboard-column{
+  padding:22px;
+  border:1px solid var(--border);
+  border-radius:24px;
+  background:white;
+}
+
+.section-title{
+  display:flex;
+  align-items:flex-end;
+  justify-content:space-between;
+  gap:12px;
+}
+
+.section-title h2{
+  margin:2px 0 0;
+  font-size:18px;
+}
+
+.live-pill{
+  padding:5px 8px;
+  border-radius:50px;
+  color:#087044;
+  background:#def8ec;
+  font-size:6px;
+  font-weight:900;
+}
+
+.transaction-list{
+  margin-top:14px;
+}
+
+.transaction-item{
+  display:grid;
+  grid-template-columns:43px 1fr auto;
+  align-items:center;
+  gap:10px;
+  padding:12px 0;
+  border-bottom:1px solid #eee;
+}
+
+.transaction-icon{
+  width:41px;
+  height:41px;
+  display:grid;
+  place-items:center;
+  border-radius:12px;
+  background:var(--yellowSoft);
+  font-size:20px;
+}
+
+.transaction-icon.hotel{
+  background:#e8eeff;
+}
+
+.transaction-icon.car{
+  background:#edf8e9;
+}
+
+.transaction-icon.health{
+  background:#ffe9eb;
+}
+
+.transaction-item strong,
+.transaction-item span{
+  display:block;
+}
+
+.transaction-item>div:nth-child(2)>strong{
+  font-size:10px;
+}
+
+.transaction-item>div:nth-child(2)>span{
+  margin-top:2px;
+  color:#999;
+  font-size:7px;
+}
+
+.transaction-value{
+  text-align:right;
+}
+
+.transaction-value strong{
+  font-size:9px;
+}
+
+.transaction-value span{
+  margin-top:2px;
+  color:#999;
+  font-size:7px;
+}
+
+.signal-box{
+  display:grid;
+  grid-template-columns:44px 1fr;
+  gap:11px;
+  margin-top:14px;
+  padding:14px;
+  border-radius:17px;
+  background:var(--yellowSoft);
+}
+
+.signal-icon{
+  width:42px;
+  height:42px;
+  display:grid;
+  place-items:center;
+  border-radius:13px;
+  color:var(--yellow);
+  background:var(--black);
+  font-size:20px;
+}
+
+.signal-box span{
+  color:#927900;
+  font-size:6px;
+  font-weight:900;
+}
+
+.signal-box strong{
+  display:block;
+  margin:2px 0;
+  font-size:10px;
+}
+
+.signal-box p{
+  margin:0;
+  color:#777;
+  font-size:7px;
+}
+
+.recommendation-column{
+  background:#111;
+  color:white;
+  border-color:#111;
+}
+
+.recommendation-column .eyebrow{
+  color:var(--yellow);
+}
+
+.recommendation-column .section-title h2{
+  color:white;
+}
+
+.dashboard-recommend-card{
+  margin-top:14px;
+  padding:18px;
+  border-radius:21px;
+  color:var(--black);
+  background:white;
+}
+
+.recommend-top{
+  display:grid;
+  grid-template-columns:52px 1fr;
+  gap:11px;
+}
+
+.dashboard-product-icon{
+  width:50px;
+  height:50px;
+  display:grid;
+  place-items:center;
+  border-radius:15px;
+  background:var(--yellow);
+  font-size:24px;
+}
+
+.recommend-top span{
+  color:#9d8200;
+  font-size:6px;
+  font-weight:900;
+}
+
+.recommend-top h3{
+  margin:2px 0;
+  font-size:15px;
+}
+
+.recommend-top p{
+  margin:0;
+  color:#777;
+  font-size:8px;
+  line-height:1.5;
+}
+
+.why-now{
+  margin-top:16px;
+  padding-top:14px;
+  border-top:1px solid #eee;
+}
+
+.why-now>span{
+  color:#999;
+  font-size:6px;
+  font-weight:900;
+}
+
+.why-now>div{
+  display:grid;
+  grid-template-columns:27px 1fr;
+  align-items:center;
+  gap:7px;
+  margin-top:8px;
+}
+
+.why-now b{
+  width:26px;
+  height:26px;
+  display:grid;
+  place-items:center;
+  border-radius:8px;
+  background:#f1f1f1;
+  font-size:7px;
+}
+
+.why-now p{
+  margin:0;
+  font-size:8px;
+}
+
+.recommend-score{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:7px;
+  margin:14px 0;
+}
+
+.recommend-score>div{
+  padding:11px;
+  border-radius:13px;
+  background:#f5f5f5;
+}
+
+.recommend-score span,
+.recommend-score strong{
+  display:block;
+}
+
+.recommend-score span{
+  color:#999;
+  font-size:6px;
+}
+
+.recommend-score strong{
+  margin-top:2px;
+  font-size:12px;
+}
+
+.dashboard-secondary-card{
+  display:grid;
+  grid-template-columns:1fr auto;
+  align-items:center;
+  gap:10px;
+  margin-top:9px;
+  padding:15px;
+  border:1px solid #393939;
+  border-radius:17px;
+  background:#242424;
+}
+
+.dashboard-secondary-card h3{
+  margin:2px 0;
+  font-size:11px;
+}
+
+.dashboard-secondary-card p{
+  margin:0;
+  color:#999;
+  font-size:7px;
+}
+
+.mini-btn{
+  border:0;
+  padding:8px 10px;
+  border-radius:10px;
+  background:var(--yellow);
+  font-size:7px;
+  font-weight:900;
+}
+
+.dashboard-explain{
+  display:grid;
+  grid-template-columns:1fr 60px 1fr;
+  align-items:center;
+  gap:9px;
+  margin-top:12px;
+}
+
+.dashboard-explain>div:not(.vs){
+  padding:17px;
+  border:1px solid var(--border);
+  border-radius:18px;
+  background:white;
+}
+
+.dashboard-explain span{
+  color:#999;
+  font-size:6px;
+  font-weight:900;
+}
+
+.dashboard-explain strong{
+  display:block;
+  margin:3px 0;
+  font-size:11px;
+}
+
+.dashboard-explain p{
+  margin:0;
+  color:#999;
+  font-size:7px;
+}
+
+.dashboard-explain .vs{
+  color:#aaa;
+  font-size:9px;
+  font-weight:900;
+  text-align:center;
+}
+
+.product-detail-hero{
+  display:grid;
+  grid-template-columns:90px 1fr;
+  align-items:center;
+  gap:20px;
+  padding:30px;
+  border-radius:27px;
+  color:white;
+  background:linear-gradient(145deg,#111,#252525);
+}
+
+.detail-product-icon{
+  width:84px;
+  height:84px;
+  display:grid;
+  place-items:center;
+  border-radius:23px;
+  color:var(--black);
+  background:var(--yellow);
+  font-size:38px;
+}
+
+.product-match{
+  color:var(--yellow);
+  font-size:8px;
+  font-weight:900;
+}
+
+.product-detail-hero h1{
+  margin:3px 0;
+  font-size:30px;
+}
+
+.product-detail-hero p{
+  margin:0;
+  color:#aaa;
+  font-size:10px;
+}
+
+.why-card{
+  margin-top:12px;
+  padding:23px;
+  border:1px solid var(--border);
+  border-radius:22px;
+  background:white;
+}
+
+.why-card h2{
+  margin:2px 0 13px;
+}
+
+.why-list{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:8px;
+}
+
+.why-item{
+  padding:13px;
+  border-radius:14px;
+  background:#f5f5f5;
+  font-size:9px;
+}
+
+.coverage-section{
+  margin-top:30px;
+}
+
+.coverage-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:9px;
+  margin-top:12px;
+}
+
+.coverage-card{
+  padding:18px;
+  border:1px solid var(--border);
+  border-radius:18px;
+  background:white;
+}
+
+.coverage-card span{
+  display:block;
+  font-size:22px;
+}
+
+.coverage-card strong{
+  display:block;
+  margin-top:7px;
+  font-size:10px;
+}
+
+.coverage-card p{
+  margin:2px 0;
+  color:#999;
+  font-size:8px;
+}
+
+.price-section{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:20px;
+  margin-top:13px;
+  padding:20px;
+  border-radius:20px;
+  background:var(--yellow);
+}
+
+.price-section span,
+.price-section strong{
+  display:block;
+}
+
+.price-section span{
+  font-size:8px;
+}
+
+.price-section strong{
+  font-size:22px;
+}
+
+.price-section .primary-btn{
+  color:white;
+  background:var(--black);
+}
+
+.prototype-note{
+  margin-top:11px;
+  color:#999;
+  font-size:7px;
+  text-align:center;
+}
+
+.chat-page.active{
+  display:flex;
+  flex-direction:column;
+}
+
+.online-dot{
+  width:11px;
+  height:11px;
+  border-radius:50%;
+  background:var(--green);
+  box-shadow:0 0 0 5px #dcf8ed;
+}
+
+.chat-context{
+  display:grid;
+  grid-template-columns:40px 1fr;
+  gap:10px;
+  padding:14px;
+  border-radius:17px;
+  color:white;
+  background:var(--black);
+}
+
+.chat-context-icon{
+  width:38px;
+  height:38px;
+  display:grid;
+  place-items:center;
+  border-radius:11px;
+  color:var(--black);
+  background:var(--yellow);
+}
+
+.chat-context strong{
+  font-size:10px;
+}
+
+.chat-context p{
+  margin:2px 0 0;
+  color:#aaa;
+  font-size:8px;
+}
+
+.chat-chips{
+  display:flex;
+  gap:6px;
+  overflow-x:auto;
+  padding:10px 0;
+  scrollbar-width:none;
+}
+
+.chat-chips button{
+  white-space:nowrap;
+  padding:8px 10px;
+  border:1px solid #ddd;
+  border-radius:50px;
+  background:white;
+  font-size:8px;
+}
+
+.chat-messages{
+  flex:1;
+  min-height:430px;
+  padding-bottom:95px;
+}
+
+.message-row{
+  display:flex;
+  gap:8px;
+  margin:12px 0;
+}
+
+.message-row.user{
+  justify-content:flex-end;
+}
+
+.ai-avatar{
+  min-width:35px;
+  height:35px;
+  display:grid;
+  place-items:center;
+  border-radius:11px;
+  background:var(--yellow);
+  font-size:7px;
+  font-weight:900;
+}
+
+.message{
+  max-width:76%;
+  padding:12px 14px;
+  border:1px solid #eee;
+  border-radius:6px 17px 17px 17px;
+  background:white;
+  font-size:10px;
+  line-height:1.7;
+}
+
+.message-row.user .message{
+  color:white;
+  border-radius:17px 6px 17px 17px;
+  background:var(--black);
+}
+
+.typing-dots{
+  display:flex;
+  gap:3px;
+}
+
+.typing-dots i{
+  width:5px;
+  height:5px;
+  border-radius:50%;
+  background:#999;
+  animation:typing 1s infinite;
+}
+
+.typing-dots i:nth-child(2){
+  animation-delay:.15s;
+}
+
+.typing-dots i:nth-child(3){
+  animation-delay:.3s;
+}
+
+@keyframes typing{
+  0%,80%,100%{
+    transform:translateY(0);
+  }
+
+  40%{
+    transform:translateY(-4px);
+  }
+}
+
+.chat-input-area{
+  position:sticky;
+  bottom:15px;
+  display:grid;
+  grid-template-columns:1fr 43px;
+  gap:6px;
+  padding:7px;
+  border:1px solid #eee;
+  border-radius:18px;
+  background:white;
+  box-shadow:0 15px 45px rgba(0,0,0,.12);
+}
+
+.chat-input-area input{
+  margin:0;
+  border:0;
+  background:transparent;
+}
+
+.chat-input-area button{
+  width:40px;
+  height:40px;
+  border:0;
+  border-radius:12px;
+  background:var(--yellow);
+  font-size:17px;
+}
+
+
+/* =============================== */
+/* BROKER                           */
+/* =============================== */
+
+.broker-header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+}
+
+.broker-header h1{
+  margin:2px 0;
+  font-size:34px;
+}
+
+.broker-header p{
+  margin:0;
+  color:#999;
+  font-size:9px;
+}
+
+.broker-avatar{
+  width:47px;
+  height:47px;
+  display:grid;
+  place-items:center;
+  border-radius:14px;
+  color:white;
+  background:var(--black);
+  font-weight:900;
+}
+
+.broker-search{
+  display:grid;
+  grid-template-columns:35px 1fr;
+  align-items:center;
+  margin-top:22px;
+  padding:3px 13px;
+  border:1px solid var(--border);
+  border-radius:16px;
+  background:white;
+}
+
+.broker-search input{
+  margin:0;
+  border:0;
+  background:transparent;
+}
+
+.customer-list{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:9px;
+  margin-top:13px;
+}
+
+.customer-card{
+  padding:16px;
+  border:1px solid var(--border);
+  border-radius:18px;
+  background:white;
+}
+
+.customer-card h3,
+.customer-card p{
+  margin:0;
+}
+
+.customer-card h3{
+  font-size:11px;
+}
+
+.customer-card p{
+  margin-top:2px;
+  color:#999;
+  font-size:8px;
+}
+
+.customer-opportunity{
+  display:flex;
+  justify-content:space-between;
+  margin-top:13px;
+  padding-top:10px;
+  border-top:1px solid #eee;
+  font-size:8px;
+}
+
+.customer-opportunity strong{
+  color:#b99900;
+}
+
+.customer-card>button{
+  width:100%;
+  margin-top:12px;
+  padding:9px;
+  border:0;
+  border-radius:10px;
+  color:white;
+  background:var(--black);
+  font-size:8px;
+  font-weight:900;
+}
+
+.broker-profile-card{
+  display:grid;
+  grid-template-columns:auto 1fr auto;
+  align-items:center;
+  gap:16px;
+  padding:21px;
+  border:1px solid var(--border);
+  border-radius:23px;
+  background:white;
+}
+
+.broker-detail-avatar{
+  width:72px;
+  height:72px;
+  display:grid;
+  place-items:center;
+  border-radius:20px;
+  background:var(--yellow);
+  font-size:24px;
+  font-weight:900;
+}
+
+.active-chip{
+  display:inline-block;
+  padding:4px 7px;
+  border-radius:50px;
+  color:#07844e;
+  background:#dbf6e9;
+  font-size:6px;
+  font-weight:900;
+}
+
+.broker-profile-card h2{
+  margin:4px 0;
+  font-size:20px;
+}
+
+.broker-profile-card p{
+  margin:0;
+  color:#999;
+  font-size:8px;
+}
+
+.broker-tags{
+  display:flex;
+  flex-wrap:wrap;
+  gap:5px;
+  margin-top:8px;
+}
+
+.broker-tags span{
+  padding:4px 7px;
+  border-radius:50px;
+  background:#f3f3f3;
+  font-size:7px;
+}
+
+.broker-contact{
+  display:flex;
+  flex-direction:column;
+  gap:4px;
+}
+
+.broker-contact button{
+  border:0;
+  padding:6px 9px;
+  border-radius:8px;
+  background:#f4f4f4;
+  font-size:7px;
+}
+
+
+/* ===== NEW CUSTOMER REQUIREMENTS ===== */
+
+.customer-requirements{
+  margin-top:11px;
+  overflow:hidden;
+  border-radius:24px;
+  color:white;
+  background:
+    radial-gradient(circle at 100% 0%,rgba(255,212,0,.18),transparent 40%),
+    linear-gradient(145deg,#15100b,#2a1b0d);
+  box-shadow:0 18px 45px rgba(0,0,0,.10);
+}
+
+.requirements-header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:20px;
+  padding:20px 21px 15px;
+}
+
+.requirements-header h2{
+  margin:3px 0 2px;
+  font-size:18px;
+}
+
+.requirements-header p{
+  margin:0;
+  color:#b5a99c;
+  font-size:8px;
+}
+
+.requirement-score{
+  min-width:86px;
+  padding:10px 13px;
+  border-radius:15px;
+  color:var(--black);
+  background:var(--yellow);
+  text-align:center;
+}
+
+.requirement-score span,
+.requirement-score strong{
+  display:block;
+}
+
+.requirement-score span{
+  font-size:6px;
+  font-weight:900;
+}
+
+.requirement-score strong{
+  font-size:22px;
+}
+
+.requirements-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  border-top:1px solid rgba(255,255,255,.10);
+}
+
+.requirement-column{
+  padding:20px;
+}
+
+.requirement-column:first-child{
+  border-right:1px solid rgba(255,255,255,.10);
+}
+
+.requirement-title{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  margin-bottom:14px;
+}
+
+.requirement-title-icon{
+  width:32px;
+  height:32px;
+  display:grid;
+  place-items:center;
+  border-radius:10px;
+  font-size:13px;
+  font-weight:900;
+}
+
+.requirement-title-icon.must{
+  color:#183a27;
+  background:var(--yellow);
+}
+
+.requirement-title-icon.deal{
+  color:var(--black);
+  background:#ff6f6f;
+}
+
+.requirement-title span,
+.requirement-title strong{
+  display:block;
+}
+
+.requirement-title span{
+  color:#bda979;
+  font-size:7px;
+  font-weight:900;
+}
+
+.requirement-title strong{
+  margin-top:1px;
+  color:white;
+  font-size:14px;
+}
+
+.requirement-list{
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+}
+
+.requirement-item{
+  display:grid;
+  grid-template-columns:30px 1fr;
+  align-items:center;
+  gap:9px;
+  min-height:48px;
+  padding:9px 11px;
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:14px;
+  background:rgba(255,255,255,.05);
+}
+
+.requirement-mark{
+  width:29px;
+  height:29px;
+  display:grid;
+  place-items:center;
+  border-radius:9px;
+  font-size:11px;
+  font-weight:900;
+}
+
+.requirement-item.must .requirement-mark{
+  color:#191600;
+  background:var(--yellow);
+}
+
+.requirement-item.deal .requirement-mark{
+  color:white;
+  background:#d94b4b;
+}
+
+.requirement-item strong,
+.requirement-item small{
+  display:block;
+}
+
+.requirement-item strong{
+  color:white;
+  font-size:9px;
+}
+
+.requirement-item small{
+  margin-top:2px;
+  color:#968a7f;
+  font-size:6px;
+}
+
+.requirements-footer{
+  display:grid;
+  grid-template-columns:42px 1fr auto;
+  align-items:center;
+  gap:10px;
+  margin:0 20px 20px;
+  padding:13px;
+  border-radius:16px;
+  color:var(--black);
+  background:linear-gradient(135deg,#ffe76a,#ffd400);
+}
+
+.requirements-ai-icon{
+  width:40px;
+  height:40px;
+  display:grid;
+  place-items:center;
+  border-radius:12px;
+  color:var(--yellow);
+  background:var(--black);
+  font-size:8px;
+  font-weight:900;
+}
+
+.requirements-footer span,
+.requirements-footer strong{
+  display:block;
+}
+
+.requirements-footer span{
+  font-size:6px;
+  font-weight:900;
+}
+
+.requirements-footer strong{
+  margin-top:2px;
+  font-size:10px;
+}
+
+.requirement-match{
+  min-width:76px;
+  text-align:right;
+}
+
+.requirement-match small{
+  display:block;
+  font-size:6px;
+}
+
+.requirement-match strong{
+  font-size:17px;
+}
+
+
+/* ===== END NEW CUSTOMER REQUIREMENTS ===== */
+
+
+.broker-detail-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+  margin-top:10px;
+}
+
+.broker-box{
+  padding:18px;
+  border:1px solid var(--border);
+  border-radius:20px;
+  background:white;
+}
+
+.broker-box h3{
+  margin:3px 0 12px;
+}
+
+.mini-update-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:7px;
+}
+
+.mini-update-grid>div{
+  padding:13px;
+  border-radius:14px;
+  background:#f5f5f5;
+  font-size:22px;
+}
+
+.mini-update-grid strong,
+.mini-update-grid small{
+  display:block;
+}
+
+.mini-update-grid strong{
+  margin-top:8px;
+  font-size:9px;
+}
+
+.mini-update-grid small{
+  margin-top:2px;
+  color:#999;
+  font-size:7px;
+}
+
+.broker-policy{
+  display:grid;
+  grid-template-columns:34px 1fr;
+  align-items:center;
+  gap:8px;
+  padding:10px 0;
+  border-bottom:1px solid #eee;
+}
+
+.broker-policy>b{
+  width:32px;
+  height:32px;
+  display:grid;
+  place-items:center;
+  border-radius:9px;
+  background:var(--yellow);
+}
+
+.broker-policy strong,
+.broker-policy span{
+  display:block;
+}
+
+.broker-policy strong{
+  font-size:9px;
+}
+
+.broker-policy span{
+  color:#999;
+  font-size:7px;
+}
+
+.broker-ai-card{
+  margin-top:10px;
+  padding:22px;
+  border-radius:22px;
+  color:white;
+  background:var(--black);
+}
+
+.broker-ai-card h2{
+  margin:3px 0 15px;
+}
+
+.broker-ai-summary{
+  display:grid;
+  grid-template-columns:1fr auto;
+  align-items:center;
+  gap:10px;
+  margin-bottom:12px;
+  padding:13px;
+  border-radius:15px;
+  background:#262626;
+}
+
+.broker-ai-summary strong{
+  display:block;
+  font-size:10px;
+}
+
+.broker-ai-summary p{
+  margin:2px 0 0;
+  color:#999;
+  font-size:7px;
+}
+
+.ai-fit-badge{
+  min-width:72px;
+  padding:9px;
+  border-radius:12px;
+  color:var(--black);
+  background:var(--yellow);
+  text-align:center;
+}
+
+.ai-fit-badge span,
+.ai-fit-badge strong{
+  display:block;
+}
+
+.ai-fit-badge span{
+  font-size:5px;
+  font-weight:900;
+}
+
+.ai-fit-badge strong{
+  font-size:17px;
+}
+
+.broker-ai-row{
+  display:grid;
+  grid-template-columns:35px 1fr auto;
+  align-items:center;
+  gap:9px;
+  margin-top:7px;
+  padding:13px;
+  border-radius:15px;
+  color:var(--black);
+  background:white;
+}
+
+.broker-ai-row>b{
+  font-size:8px;
+}
+
+.broker-ai-row strong{
+  font-size:9px;
+}
+
+.broker-ai-row p{
+  margin:2px 0;
+  color:#777;
+  font-size:7px;
+}
+
+.broker-ai-row>span{
+  font-size:10px;
+  font-weight:900;
+}
+
+
+/* MODAL */
+
+.modal-overlay{
+  position:fixed;
+  inset:0;
+  z-index:300;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+  background:rgba(0,0,0,.55);
+  backdrop-filter:blur(7px);
+}
+
+.modal-overlay.active{
+  display:flex;
+}
+
+.survey-intro-card{
+  position:relative;
+  width:min(100%,420px);
+  padding:38px 30px 28px;
+  border-radius:31px;
+  background:var(--yellow);
+  text-align:center;
+  box-shadow:0 35px 100px rgba(0,0,0,.28);
+}
+
+.modal-close{
+  position:absolute;
+  top:14px;
+  right:14px;
+  width:35px;
+  height:35px;
+  border:0;
+  border-radius:50%;
+  background:rgba(255,255,255,.6);
+  font-size:19px;
+}
+
+.survey-intro-card h2{
+  margin:7px 0;
+  font-size:31px;
+}
+
+.survey-intro-card p{
+  max-width:310px;
+  margin:10px auto 20px;
+  font-size:9px;
+  line-height:1.7;
+}
+
+.survey-mascot{
+  margin:20px 0;
+  font-size:55px;
+}
+
+.survey-card{
+  width:min(100%,500px);
+  padding:24px;
+  border-radius:26px;
+  background:white;
+  box-shadow:0 35px 100px rgba(0,0,0,.28);
+}
+
+.survey-header{
+  display:flex;
+  justify-content:space-between;
+}
+
+.survey-header h3{
+  margin:2px 0;
+}
+
+.survey-header button{
+  width:36px;
+  height:36px;
+  border:1px solid #eee;
+  border-radius:10px;
+  background:white;
+}
+
+.survey-progress-head{
+  display:flex;
+  justify-content:space-between;
+  margin-top:18px;
+  font-size:8px;
+}
+
+.survey-progress-bar{
+  height:6px;
+  margin-top:5px;
+  overflow:hidden;
+  border-radius:20px;
+  background:#eee;
+}
+
+.survey-progress-bar>div{
+  width:25%;
+  height:100%;
+  background:var(--yellow);
+  transition:.3s;
+}
+
+#surveyQuestion{
+  margin:21px 0;
+}
+
+#surveyQuestion h2{
+  font-size:18px;
+}
+
+.survey-option{
+  display:block;
+  margin-top:7px;
+  padding:12px;
+  border:1px solid #e5e5e5;
+  border-radius:13px;
+  font-size:9px;
+}
+
+.survey-option input{
+  width:auto;
+  margin:0 7px 0 0;
+}
+
+.survey-actions{
+  display:grid;
+  grid-template-columns:60px 1fr;
+  gap:7px;
+}
+
+.minimized-survey{
+  display:none;
+  position:fixed;
+  left:22px;
+  bottom:22px;
+  z-index:250;
+  border:0;
+  padding:11px 15px;
+  border-radius:13px;
+  color:white;
+  background:var(--black);
+  box-shadow:0 12px 35px rgba(0,0,0,.2);
+  font-size:8px;
+  font-weight:900;
+}
+
+.minimized-survey.active{
+  display:block;
+}
+
+.toast{
+  position:fixed;
+  top:89px;
+  left:50%;
+  z-index:500;
+  opacity:0;
+  pointer-events:none;
+  padding:10px 16px;
+  border-radius:12px;
+  color:white;
+  background:var(--black);
+  transform:translate(-50%,-15px);
+  transition:.25s;
+  font-size:9px;
+}
+
+.toast.show{
+  opacity:1;
+  transform:translate(-50%,0);
+}
+
+@media(max-width:900px){
+
+  .roadmap-workspace{
+    grid-template-columns:1fr;
+  }
+
+  .benefit-side{
+    position:relative;
+    top:auto;
+  }
+
+  .benefit-levels{
+    grid-template-columns:repeat(4,1fr);
+  }
+
+  .dashboard-grid{
+    grid-template-columns:1fr;
+  }
+
+}
+
+@media(max-width:650px){
+
+  .topbar{
+    height:65px;
+    padding:0 13px;
+  }
+
+  .brand span{
+    display:none;
+  }
+
+  .mode-btn{
+    padding:7px 10px;
+    font-size:9px;
+  }
+
+  .page{
+    min-height:calc(100vh - 65px);
+    padding:23px 14px 90px;
+  }
+
+  .hero{
+    padding:35px 0 25px;
+  }
+
+  .hero h1{
+    font-size:42px;
+  }
+
+  .start-card{
+    padding:26px;
+  }
+
+  .home-grid,
+  .form-grid,
+  .choice-grid,
+  .road-shortcuts,
+  .broker-detail-grid{
+    grid-template-columns:1fr;
+  }
+
+  .form-grid .full{
+    grid-column:auto;
+  }
+
+  .road-profile{
+    grid-template-columns:auto 1fr;
+  }
+
+  .profile-badges,
+  .road-points{
+    grid-column:1/-1;
+  }
+
+  .year-control{
+    align-items:flex-start;
+    flex-direction:column;
+    gap:12px;
+  }
+
+  .year-panel{
+    padding:17px;
+  }
+
+  .quarter-block{
+    grid-template-columns:58px 1fr;
+    gap:9px;
+  }
+
+  .quarter-block::before{
+    left:28px;
+  }
+
+  .quarter-marker{
+    height:58px;
+  }
+
+  .quarter-marker span{
+    font-size:13px;
+  }
+
+  .recommend-card{
+    grid-template-columns:1fr;
+  }
+
+  .product-bottom{
+    flex-direction:column;
+    align-items:stretch;
+  }
+
+  .product-detail-btn{
+    width:100%;
+  }
+
+  .road-insight-card{
+    grid-template-columns:40px 1fr;
+  }
+
+  .road-insight-card button{
+    grid-column:1/-1;
+    text-align:left;
+  }
+
+  .benefit-levels{
+    grid-template-columns:1fr 1fr;
+  }
+
+  .roadmap-bottom{
+    grid-template-columns:1fr 1fr;
+  }
+
+  .road-scroll-hint{
+    display:none;
+  }
+
+  .dashboard-hero{
+    grid-template-columns:1fr;
+  }
+
+  .dashboard-score{
+    width:90px;
+    height:90px;
+  }
+
+  .dashboard-explain{
+    grid-template-columns:1fr;
+  }
+
+  .dashboard-explain .vs{
+    padding:5px;
+  }
+
+  .why-list,
+  .coverage-grid,
+  .customer-list{
+    grid-template-columns:1fr;
+  }
+
+  .product-detail-hero{
+    grid-template-columns:1fr;
+  }
+
+  .price-section{
+    align-items:stretch;
+    flex-direction:column;
+  }
+
+  .broker-profile-card{
+    grid-template-columns:auto 1fr;
+  }
+
+  .broker-contact{
+    grid-column:1/-1;
+    flex-direction:row;
+  }
+
+  .requirements-grid{
+    grid-template-columns:1fr;
+  }
+
+  .requirement-column:first-child{
+    border-right:0;
+    border-bottom:1px solid rgba(255,255,255,.10);
+  }
+
+  .requirements-footer{
+    grid-template-columns:42px 1fr;
+  }
+
+  .requirement-match{
+    grid-column:1/-1;
+    text-align:left;
+    padding-left:52px;
+  }
+
+  .survey-fab{
+    left:14px;
+  }
+
+  .chat-fab{
+    right:14px;
+  }
+
+}
+</style>
+</head>
+
+<body>
+
+<div id="toast" class="toast"></div>
+
+<header class="topbar">
+
+  <div class="brand">
+
+    <div class="brand-logo">
+      K
+    </div>
+
+    <div>
+      <strong>LifePath AI</strong>
+      <span>Hackathon Prototype</span>
+    </div>
+
+  </div>
+
+  <div class="mode-switch">
+
+    <button class="mode-btn active" data-mode="customer">
+      ลูกค้า
+    </button>
+
+    <button class="mode-btn" data-mode="broker">
+      Broker
+    </button>
+
+  </div>
+
+</header>
+
+
+<main class="app">
+
+
+<section id="home" class="page active">
+
+  <div class="hero">
+
+    <span class="hero-badge">
+      YOUR LIFE • YOUR PLAN
+    </span>
+
+    <h1>
+      วางแผนชีวิต
+      <br>
+      <span>ในแบบของคุณ</span>
+    </h1>
+
+    <p>
+      ให้ AI ช่วยมองภาพอนาคต สร้าง Life Road Map
+      และแนะนำความคุ้มครองที่เหมาะกับแต่ละช่วงชีวิต
+    </p>
+
+  </div>
+
+  <div class="start-card">
+
+    <div class="start-glow"></div>
+
+    <div class="start-icon">
+      🗺️
+    </div>
+
+    <span class="yellow-label">
+      GET STARTED
+    </span>
+
+    <h2>
+      สร้าง Life Road Map
+    </h2>
+
+    <p>
+      อัปเดตเรื่องสำคัญในชีวิตของคุณ
+      แล้วให้ AI เปลี่ยนข้อมูลเป็นแผนรายช่วงเวลา
+      พร้อม Benefit และคำแนะนำที่มองเห็นได้ทันที
+    </p>
+
+    <button class="primary-btn big" data-go="info">
+      เริ่มวางแผน →
+    </button>
+
+  </div>
+
+  <div class="home-grid">
+
+    <div class="home-feature">
+      <div>✨</div>
+      <strong>AI Personalize</strong>
+      <span>แผนเปลี่ยนตามชีวิตจริง</span>
+    </div>
+
+    <div class="home-feature">
+      <div>🧭</div>
+      <strong>Life Road Map</strong>
+      <span>แบ่งละเอียดเป็นช่วงเดือน</span>
+    </div>
+
+    <div class="home-feature">
+      <div>🎁</div>
+      <strong>Visible Benefit</strong>
+      <span>เห็นชัดว่าคุณได้อะไร</span>
+    </div>
+
+  </div>
+
+</section>
+
+
+<section id="info" class="page">
+
+  <div class="page-header">
+
+    <button class="back-btn" data-go="home">
+      ←
+    </button>
+
+    <div>
+      <span class="eyebrow">
+        PROFILE UPDATE
+      </span>
+
+      <h2>
+        ข้อมูลของคุณ
+      </h2>
+    </div>
+
+    <span class="eyebrow">
+      01 / 03
+    </span>
+
+  </div>
+
+  <div class="info-banner">
+    ✨ ยิ่งข้อมูลอัปเดต AI ก็ยิ่งวาง Road Map
+    และคำแนะนำได้ตรงกับคุณมากขึ้น
+  </div>
+
+  <div class="info-tabs">
+
+    <button class="info-tab active" data-tab="personal">
+      <span>👤</span>
+      ข้อมูลส่วนตัว
+    </button>
+
+    <button class="info-tab" data-tab="car">
+      <span>🚗</span>
+      รถ
+    </button>
+
+    <button class="info-tab" data-tab="travel">
+      <span>✈️</span>
+      เดินทาง
+    </button>
+
+    <button class="info-tab" data-tab="family">
+      <span>👨‍👩‍👧</span>
+      ครอบครัว
+    </button>
+
+    <button class="info-tab" data-tab="health">
+      <span>❤️</span>
+      สุขภาพ
+    </button>
+
+  </div>
+
+
+  <div id="tab-personal" class="form-card tab-content active">
+
+    <div class="form-heading">
+
+      <div class="step-number">
+        1
+      </div>
+
+      <div>
+        <h3>ข้อมูลส่วนตัว</h3>
+        <p>ข้อมูลพื้นฐานสำหรับสร้าง Life Road Map</p>
+      </div>
+
+    </div>
+
+    <div class="form-grid">
+
+      <label>
+        ชื่อ
+        <input id="firstName" type="text" value="ณัฐ">
+      </label>
+
+      <label>
+        อายุ
+        <input id="age" type="number" value="25">
+      </label>
+
+      <label>
+        เพศ
+
+        <select>
+          <option>ชาย</option>
+          <option>หญิง</option>
+          <option>ไม่ระบุ</option>
+        </select>
+
+      </label>
+
+      <label>
+        สถานะ
+
+        <select>
+          <option>โสด</option>
+          <option>แต่งงาน</option>
+        </select>
+
+      </label>
+
+      <label class="full">
+        อาชีพ
+        <input type="text" value="Software Engineer">
+      </label>
+
+      <label class="full">
+        รายได้ต่อเดือน
+        <input type="number" value="45000">
+      </label>
+
+    </div>
+
+  </div>
+
+
+  <div id="tab-car" class="form-card tab-content">
+
+    <div class="form-heading">
+
+      <div class="step-number">
+        2
+      </div>
+
+      <div>
+        <h3>ข้อมูลรถยนต์</h3>
+        <p>ใช้วิเคราะห์ประกันรถและ No-Claim Benefit</p>
+      </div>
+
+    </div>
+
+    <div class="form-grid">
+
+      <label class="full">
+
+        รถยนต์
+
+        <select>
+          <option>มีรถยนต์ส่วนบุคคล</option>
+          <option>ไม่มีรถยนต์</option>
+        </select>
+
+      </label>
+
+      <label>
+        ปีรถ
+        <input type="number" value="2024">
+      </label>
+
+      <label>
+
+        การใช้งาน
+
+        <select>
+          <option>ใช้ทุกวัน</option>
+          <option>ใช้บางวัน</option>
+        </select>
+
+      </label>
+
+      <label class="full">
+
+        ประวัติการเคลม
+
+        <select>
+          <option>ไม่มีเคลม 2 ปีติดต่อกัน</option>
+          <option>ไม่มีเคลม 1 ปี</option>
+          <option>มีเคลมปีล่าสุด</option>
+        </select>
+
+      </label>
+
+    </div>
+
+  </div>
+
+
+  <div id="tab-travel" class="form-card tab-content">
+
+    <div class="form-heading">
+
+      <div class="step-number">
+        3
+      </div>
+
+      <div>
+        <h3>การเดินทาง</h3>
+        <p>พฤติกรรมการเดินทางของคุณ</p>
+      </div>
+
+    </div>
+
+    <div class="choice-grid">
+
+      <label class="choice-card">
+        <input type="checkbox" checked>
+        <span>🌏</span>
+        เที่ยวต่างประเทศ
+      </label>
+
+      <label class="choice-card">
+        <input type="checkbox" checked>
+        <span>🏝️</span>
+        เที่ยวในประเทศ
+      </label>
+
+      <label class="choice-card">
+        <input type="checkbox">
+        <span>💼</span>
+        เดินทางเพื่อทำงาน
+      </label>
+
+      <label class="choice-card">
+        <input type="checkbox">
+        <span>🏕️</span>
+        Adventure
+      </label>
+
+    </div>
+
+  </div>
+
+
+  <div id="tab-family" class="form-card tab-content">
+
+    <div class="form-heading">
+
+      <div class="step-number">
+        4
+      </div>
+
+      <div>
+        <h3>ครอบครัว</h3>
+        <p>เป้าหมายชีวิตในอนาคต</p>
+      </div>
+
+    </div>
+
+    <div class="form-grid">
+
+      <label class="full">
+
+        แผนในอนาคต
+
+        <select>
+          <option>มีแผนแต่งงานในอีก 2 - 3 ปี</option>
+          <option>ยังไม่มีแผน</option>
+          <option>แต่งงานแล้ว</option>
+        </select>
+
+      </label>
+
+      <label class="full">
+        บุคคลที่ต้องดูแล
+        <input type="text" value="พ่อ แม่">
+      </label>
+
+    </div>
+
+  </div>
+
+
+  <div id="tab-health" class="form-card tab-content">
+
+    <div class="form-heading">
+
+      <div class="step-number">
+        5
+      </div>
+
+      <div>
+        <h3>สุขภาพ</h3>
+        <p>ใช้วิเคราะห์ความคุ้มครองสุขภาพ</p>
+      </div>
+
+    </div>
+
+    <div class="choice-grid">
+
+      <label class="choice-card">
+        <input type="checkbox" checked>
+        <span>🏃</span>
+        ออกกำลังกาย
+      </label>
+
+      <label class="choice-card">
+        <input type="checkbox" checked>
+        <span>🥗</span>
+        ใส่ใจสุขภาพ
+      </label>
+
+      <label class="choice-card">
+        <input type="checkbox">
+        <span>🏥</span>
+        มีโรคประจำตัว
+      </label>
+
+      <label class="choice-card">
+        <input type="checkbox">
+        <span>🚬</span>
+        สูบบุหรี่
+      </label>
+
+    </div>
+
+  </div>
+
+  <button id="updateProfileBtn" class="primary-btn big update-button">
+    อัปเดตข้อมูลและสร้าง Road Map →
+  </button>
+
+</section>
+
+
+<section id="roadmap" class="page">
+
+  <div class="page-header">
+
+    <button class="back-btn" data-go="home">
+      ←
+    </button>
+
+    <div>
+      <span class="eyebrow">
+        YOUR LIFE JOURNEY
+      </span>
+
+      <h2>
+        Life Road Map
+      </h2>
+    </div>
+
+    <button class="edit-btn" data-go="info">
+      ✎ แก้ไข
+    </button>
+
+  </div>
+
+
+  <div class="road-profile">
+
+    <div class="road-profile-main">
+
+      <div class="road-avatar">
+        N
+      </div>
+
+      <div>
+
+        <h3 id="roadmapName">
+          ณัฐ
+        </h3>
+
+        <p>
+          <span id="roadmapAge">25</span>
+          ปี • Software Engineer
+        </p>
+
+      </div>
+
+    </div>
+
+    <div class="profile-badges">
+      <span>🚗 มีรถ</span>
+      <span>✈️ เดินทางบ่อย</span>
+      <span>💍 Plan Marriage</span>
+    </div>
+
+    <div class="road-points">
+
+      <small>
+        YOUR POINT
+      </small>
+
+      <strong id="pointValue">
+        1,250
+      </strong>
+
+    </div>
+
+  </div>
+
+
+  <div class="road-shortcuts">
+
+    <button class="shortcut-card" data-go="dashboard">
+
+      <span>
+        📊
+      </span>
+
+      <div>
+
+        <strong>
+          Dashboard
+        </strong>
+
+        <small>
+          AI แนะนำจาก Transaction ล่าสุด
+        </small>
+
+      </div>
+
+      <b>→</b>
+
+    </button>
+
+
+    <button class="shortcut-card" id="openSurveyShortcut">
+
+      <span>
+        ✨
+      </span>
+
+      <div>
+
+        <strong>
+          Quick Survey
+        </strong>
+
+        <small>
+          อัปเดตชีวิต รับ +100 Point
+        </small>
+
+      </div>
+
+      <b>→</b>
+
+    </button>
+
+  </div>
+
+
+  <div class="year-control">
+
+    <div>
+
+      <span class="eyebrow">
+        ROAD MAP RECOMMENDATION
+      </span>
+
+      <h2>
+        แผนชีวิตแบบละเอียด
+      </h2>
+
+      <p>
+        คำแนะนำส่วนนี้มาจากแผนชีวิตของคุณ
+        และแบ่งเป็นช่วงเดือน 1–3, 4–6, 7–9 และ 10–12
+      </p>
+
+    </div>
+
+    <div class="year-control-right">
+
+      <button id="prevYear" class="year-arrow">
+        ←
+      </button>
+
+      <div id="yearLabel" class="current-year-label">
+        2026
+      </div>
+
+      <button id="nextYear" class="year-arrow">
+        →
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <div class="roadmap-workspace">
+
+    <div class="roadmap-main-column">
+
+      <div class="roadmap-window">
+
+        <div id="roadmapTrack" class="roadmap-track">
+
+
+          <article class="year-panel">
+
+            <div class="year-panel-header">
+
+              <div>
+
+                <span>
+                  AGE 25
+                </span>
+
+                <h2>
+                  2026
+                </h2>
+
+                <p>
+                  Build Protection Foundation
+                </p>
+
+              </div>
+
+              <div class="year-status current">
+                ปีปัจจุบัน
+              </div>
+
+            </div>
+
+
+            <section class="quarter-block">
+
+              <div class="quarter-marker">
+                <strong>เดือน</strong>
+                <span>1–3</span>
+              </div>
+
+              <div class="quarter-content">
+
+                <div class="quarter-heading">
+
+                  <div>
+
+                    <span class="quarter-tag urgent">
+                      DO NOW
+                    </span>
+
+                    <h3>
+                      ปิดช่องว่างด้านการเดินทาง
+                    </h3>
+
+                  </div>
+
+                  <span class="quarter-number">
+                    Q1
+                  </span>
+
+                </div>
+
+
+                <div class="recommend-card highlight">
+
+                  <div class="product-icon">
+                    ✈️
+                  </div>
+
+                  <div class="product-content">
+
+                    <span class="ai-match">
+                      ✦ ROAD MAP MATCH 94%
+                    </span>
+
+                    <h3>
+                      Travel Protect Plus
+                    </h3>
+
+                    <p>
+                      จากแผนชีวิตพบว่าคุณเดินทางต่างประเทศบ่อย
+                      แต่ปัจจุบันยังไม่มี Travel Insurance โดยตรง
+                    </p>
+
+                    <div class="reason-list">
+                      <span>✓ Emergency Medical</span>
+                      <span>✓ Flight Delay</span>
+                      <span>✓ Lost Baggage</span>
+                    </div>
+
+                    <div class="product-bottom">
+
+                      <div>
+
+                        <small>
+                          เริ่มต้น
+                        </small>
+
+                        <strong>
+                          ฿399 / Trip
+                        </strong>
+
+                      </div>
+
+                      <button class="product-detail-btn" data-product="travel">
+                        ดูรายละเอียด →
+                      </button>
+
+                    </div>
+
+                  </div>
+
+                </div>
+
+
+                <div class="road-task">
+
+                  <div class="task-check">
+                    ✓
+                  </div>
+
+                  <div>
+
+                    <strong>
+                      อัปเดตข้อมูลรถยนต์
+                    </strong>
+
+                    <p>
+                      สำเร็จแล้ว • +100 Points
+                    </p>
+
+                  </div>
+
+                </div>
+
+              </div>
+
+            </section>
+
+
+            <section class="quarter-block">
+
+              <div class="quarter-marker">
+                <strong>เดือน</strong>
+                <span>4–6</span>
+              </div>
+
+              <div class="quarter-content">
+
+                <div class="quarter-heading">
+
+                  <div>
+
+                    <span class="quarter-tag">
+                      NEXT STEP
+                    </span>
+
+                    <h3>
+                      เพิ่ม Health Protection
+                    </h3>
+
+                  </div>
+
+                  <span class="quarter-number">
+                    Q2
+                  </span>
+
+                </div>
+
+                <div class="recommend-card">
+
+                  <div class="product-icon health">
+                    ❤️
+                  </div>
+
+                  <div class="product-content">
+
+                    <span class="ai-match">
+                      ✦ ROAD MAP MATCH 89%
+                    </span>
+
+                    <h3>
+                      Health Upgrade
+                    </h3>
+
+                    <p>
+                      AI วางไว้ช่วงเดือน 4–6
+                      เพื่อกระจายการวางแผน Protection
+                      ไม่ให้ต้องทำทุกอย่างพร้อมกัน
+                    </p>
+
+                    <div class="product-bottom">
+
+                      <div>
+
+                        <small>
+                          Suggested Coverage
+                        </small>
+
+                        <strong>
+                          5 ล้านบาท
+                        </strong>
+
+                      </div>
+
+                      <button class="product-detail-btn" data-product="health">
+                        ดูรายละเอียด →
+                      </button>
+
+                    </div>
+
+                  </div>
+
+                </div>
+
+              </div>
+
+            </section>
+
+
+            <section class="quarter-block">
+
+              <div class="quarter-marker">
+                <strong>เดือน</strong>
+                <span>7–9</span>
+              </div>
+
+              <div class="quarter-content">
+
+                <div class="quarter-heading">
+
+                  <div>
+
+                    <span class="quarter-tag monitor">
+                      MONITOR
+                    </span>
+
+                    <h3>
+                      รักษา No-Claim Streak
+                    </h3>
+
+                  </div>
+
+                  <span class="quarter-number">
+                    Q3
+                  </span>
+
+                </div>
+
+                <div class="road-insight-card">
+
+                  <div class="road-insight-icon">
+                    🚗
+                  </div>
+
+                  <div>
+
+                    <span>
+                      AUTO SAFE PREMIUM
+                    </span>
+
+                    <h3>
+                      No-Claim Streak 2 ปี
+                    </h3>
+
+                    <p>
+                      รักษาประวัติต่อเนื่อง
+                      เพื่อปลดล็อก Benefit Level ถัดไป
+                    </p>
+
+                  </div>
+
+                  <button id="focusBenefitBtn">
+                    ดู Benefit →
+                  </button>
+
+                </div>
+
+              </div>
+
+            </section>
+
+
+            <section class="quarter-block last">
+
+              <div class="quarter-marker">
+                <strong>เดือน</strong>
+                <span>10–12</span>
+              </div>
+
+              <div class="quarter-content">
+
+                <div class="quarter-heading">
+
+                  <div>
+
+                    <span class="quarter-tag prepare">
+                      PREPARE
+                    </span>
+
+                    <h3>
+                      Review ก่อนสิ้นปี
+                    </h3>
+
+                  </div>
+
+                  <span class="quarter-number">
+                    Q4
+                  </span>
+
+                </div>
+
+                <div class="review-grid">
+
+                  <div class="review-card">
+                    <span>💰</span>
+                    <strong>Financial Check</strong>
+                    <p>ทบทวนรายได้และเงินสำรอง</p>
+                  </div>
+
+                  <div class="review-card">
+                    <span>🔄</span>
+                    <strong>Policy Review</strong>
+                    <p>ตรวจกรมธรรม์ก่อนต่ออายุ</p>
+                  </div>
+
+                </div>
+
+              </div>
+
+            </section>
+
+          </article>
+
+
+          <article class="year-panel">
+
+            <div class="year-panel-header">
+
+              <div>
+
+                <span>
+                  AGE 26
+                </span>
+
+                <h2>
+                  2027
+                </h2>
+
+                <p>
+                  Grow Your Protection
+                </p>
+
+              </div>
+
+              <div class="year-status future">
+                NEXT YEAR
+              </div>
+
+            </div>
+
+
+            <section class="quarter-block">
+
+              <div class="quarter-marker">
+                <strong>เดือน</strong>
+                <span>1–3</span>
+              </div>
+
+              <div class="quarter-content">
+
+                <div class="quarter-heading">
+
+                  <div>
+
+                    <span class="quarter-tag">
+                      RENEW
+                    </span>
+
+                    <h3>
+                      ต่ออายุ Auto Insurance
+                    </h3>
+
+                  </div>
+
+                  <span class="quarter-number">
+                    Q1
+                  </span>
+
+                </div>
+
+                <div class="road-insight-card yellow">
+
+                  <div class="road-insight-icon">
+                    🎁
+                  </div>
+
+                  <div>
+
+                    <span>
+                      BENEFIT UNLOCK
+                    </span>
+
+                    <h3>
+                      เป้าหมาย No-Claim 40%
+                    </h3>
+
+                    <p>
+                      ก่อนต่ออายุ AI จะคำนวณ Benefit
+                      ที่อาจได้รับให้ดูล่วงหน้า
+                    </p>
+
+                  </div>
+
+                </div>
+
+              </div>
+
+            </section>
+
+
+            <section class="quarter-block">
+
+              <div class="quarter-marker">
+                <strong>เดือน</strong>
+                <span>4–6</span>
+              </div>
+
+              <div class="quarter-content">
+
+                <div class="quarter-heading">
+
+                  <div>
+
+                    <span class="quarter-tag">
+                      BUILD
+                    </span>
+
+                    <h3>
+                      เริ่ม Family Protection
+                    </h3>
+
+                  </div>
+
+                  <span class="quarter-number">
+                    Q2
+                  </span>
+
+                </div>
+
+                <div class="recommend-card">
+
+                  <div class="product-icon family">
+                    👨‍👩‍👧
+                  </div>
+
+                  <div class="product-content">
+
+                    <span class="ai-match">
+                      ✦ ROAD MAP MATCH 91%
+                    </span>
+
+                    <h3>
+                      Family Protection Plan
+                    </h3>
+
+                    <p>
+                      เตรียมความคุ้มครองก่อนเข้าสู่ช่วงสร้างครอบครัว
+                    </p>
+
+                    <div class="product-bottom">
+
+                      <div>
+
+                        <small>
+                          Recommended
+                        </small>
+
+                        <strong>
+                          Life + CI
+                        </strong>
+
+                      </div>
+
+                      <button class="product-detail-btn" data-product="family">
+                        ดูรายละเอียด →
+                      </button>
+
+                    </div>
+
+                  </div>
+
+                </div>
+
+              </div>
+
+            </section>
+
+
+            <section class="quarter-block">
+
+              <div class="quarter-marker">
+                <strong>เดือน</strong>
+                <span>7–9</span>
+              </div>
+
+              <div class="quarter-content">
+
+                <div class="quarter-heading">
+
+                  <div>
+
+                    <span class="quarter-tag monitor">
+                      TRACK
+                    </span>
+
+                    <h3>
+                      ติดตาม Health Score
+                    </h3>
+
+                  </div>
+
+                  <span class="quarter-number">
+                    Q3
+                  </span>
+
+                </div>
+
+                <div class="review-grid">
+
+                  <div class="review-card">
+                    <span>🏃</span>
+                    <strong>Health Goal</strong>
+                    <p>ออกกำลังกายต่อเนื่อง</p>
+                  </div>
+
+                  <div class="review-card">
+                    <span>🎁</span>
+                    <strong>Reward</strong>
+                    <p>สะสม Point จาก Activity</p>
+                  </div>
+
+                </div>
+
+              </div>
+
+            </section>
+
+
+            <section class="quarter-block last">
+
+              <div class="quarter-marker">
+                <strong>เดือน</strong>
+                <span>10–12</span>
+              </div>
+
+              <div class="quarter-content">
+
+                <div class="quarter-heading">
+
+                  <div>
+
+                    <span class="quarter-tag prepare">
+                      REVIEW
+                    </span>
+
+                    <h3>
+                      Annual Protection Review
+                    </h3>
+
+                  </div>
+
+                  <span class="quarter-number">
+                    Q4
+                  </span>
+
+                </div>
+
+                <div class="road-task">
+
+                  <div class="task-check dark">
+                    AI
+                  </div>
+
+                  <div>
+
+                    <strong>
+                      AI จะสร้าง Road Map ปีถัดไป
+                    </strong>
+
+                    <p>
+                      จาก Life Event และ Transaction ล่าสุดของคุณ
+                    </p>
+
+                  </div>
+
+                </div>
+
+              </div>
+
+            </section>
+
+          </article>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <aside id="benefitPanel" class="benefit-side">
+
+      <div class="benefit-side-header">
+
+        <div>
+
+          <span class="eyebrow" style="color:#ffd400">
+            NO-CLAIM BENEFIT
+          </span>
+
+          <h2>
+            สิทธิ์ของคุณ
+          </h2>
+
+          <p>
+            ไม่เคลมต่อเนื่อง
+            ยิ่งปลดล็อก Benefit มากขึ้น
+          </p>
+
+        </div>
+
+        <div class="benefit-car">
+          🚗
+        </div>
+
+      </div>
+
+
+      <div class="benefit-policy-tabs">
+
+        <button class="benefit-policy-tab active">
+          ประกัน A
+        </button>
+
+        <button class="benefit-policy-tab">
+          ประกัน B
+        </button>
+
+      </div>
+
+
+      <div class="benefit-big">
+
+        <span>
+          ปีนี้คุณได้
+        </span>
+
+        <strong>
+          30%
+        </strong>
+
+        <p>
+          No-Claim Benefit Level
+        </p>
+
+      </div>
+
+
+      <div class="benefit-saving">
+
+        <span>
+          💸 มูลค่า Benefit โดยประมาณ
+        </span>
+
+        <strong>
+          ฿3,870
+        </strong>
+
+        <p>
+          จากเบี้ยตัวอย่าง ฿12,900
+        </p>
+
+      </div>
+
+
+      <div class="benefit-year-title">
+
+        <span>
+          YOUR BENEFIT JOURNEY
+        </span>
+
+        <strong>
+          รักษา Streak ต่อเพื่อปลดล็อก
+        </strong>
+
+      </div>
+
+
+      <div class="benefit-levels">
+
+        <div class="benefit-level">
+
+          <div class="benefit-level-top">
+
+            <div class="benefit-check">
+              ✓
+            </div>
+
+            <div>
+              <span>YEAR 1</span>
+              <strong>20%</strong>
+            </div>
+
+          </div>
+
+          <div class="benefit-rewards">
+            <span>✓ ส่วนลดเบี้ย</span>
+            <span>✓ No-Claim Badge</span>
+          </div>
+
+        </div>
+
+
+        <div class="benefit-level current">
+
+          <div class="you-are-here">
+            YOU ARE HERE
+          </div>
+
+          <div class="benefit-level-top">
+
+            <div class="benefit-check">
+              🔥
+            </div>
+
+            <div>
+              <span>YEAR 2</span>
+              <strong>30%</strong>
+            </div>
+
+          </div>
+
+          <div class="benefit-rewards">
+            <span>✓ ส่วนลดเพิ่มขึ้น</span>
+            <span>✓ Renewal Reminder</span>
+            <span>✓ AI Claim Advisor</span>
+          </div>
+
+        </div>
+
+
+        <div class="benefit-level locked">
+
+          <div class="benefit-level-top">
+
+            <div class="benefit-check">
+              🔒
+            </div>
+
+            <div>
+              <span>YEAR 3</span>
+              <strong>40%</strong>
+            </div>
+
+          </div>
+
+          <div class="benefit-rewards">
+            <span>🔒 ส่วนลดเพิ่มอีก</span>
+            <span>🔒 Loyalty Reward</span>
+            <span>🔒 Priority Renewal</span>
+          </div>
+
+        </div>
+
+
+        <div class="benefit-level locked">
+
+          <div class="benefit-level-top">
+
+            <div class="benefit-check">
+              🔒
+            </div>
+
+            <div>
+              <span>YEAR 4</span>
+              <strong>MAX</strong>
+            </div>
+
+          </div>
+
+          <div class="benefit-rewards">
+            <span>🔒 Maximum Benefit</span>
+            <span>🔒 Exclusive Reward</span>
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <div class="next-benefit-card">
+
+        <span>
+          NEXT UNLOCK
+        </span>
+
+        <h3>
+          อีก 1 ปี
+        </h3>
+
+        <p>
+          คุณอาจขยับจาก
+          <strong>30% → 40%</strong>
+        </p>
+
+        <div class="next-saving">
+
+          <small>
+            ประหยัดเพิ่มประมาณ
+          </small>
+
+          <strong>
+            + ฿1,290
+          </strong>
+
+        </div>
+
+      </div>
+
+
+      <div class="benefit-ai">
+
+        <div>
+          AI
+        </div>
+
+        <p>
+          ถ้าเกิดเหตุเล็กน้อย
+          AI สามารถช่วยเปรียบเทียบค่าซ่อม
+          ค่าเสียหายส่วนแรก และผลต่อ Benefit
+          ก่อนตัดสินใจได้
+        </p>
+
+      </div>
+
+
+      <button class="benefit-chat-btn" data-go="chat">
+        ถาม AI เรื่อง Benefit →
+      </button>
+
+
+      <small class="benefit-disclaimer">
+        * ตัวเลขเป็นข้อมูลจำลองสำหรับ Prototype
+        สิทธิ์จริงขึ้นอยู่กับเงื่อนไขกรมธรรม์
+      </small>
+
+    </aside>
+
+  </div>
+
+
+  <div class="roadmap-bottom">
+
+    <button id="scrollPrev" class="road-bottom-btn">
+      ← ปีก่อนหน้า
+    </button>
+
+    <div class="road-scroll-hint">
+      เลื่อนไปดู Road Map ปีถัดไป →
+    </div>
+
+    <button id="scrollNext" class="road-bottom-btn primary">
+      ปีถัดไป →
+    </button>
+
+  </div>
+
+
+  <button id="surveyFab" class="survey-fab">
+    ✨ แบบสอบถาม
+  </button>
+
+
+  <button class="chat-fab" data-go="chat">
+    <span>1</span>
+    🤖
+  </button>
+
+</section>
+
+
+<section id="dashboard" class="page">
+
+  <div class="page-header">
+
+    <button class="back-btn" data-go="roadmap">
+      ←
+    </button>
+
+    <div>
+
+      <span class="eyebrow">
+        BEHAVIOR INSIGHT
+      </span>
+
+      <h2>
+        Dashboard
+      </h2>
+
+    </div>
+
+    <button id="refreshDashboard" class="icon-btn">
+      ↻
+    </button>
+
+  </div>
+
+
+  <div class="dashboard-hero">
+
+    <div>
+
+      <span class="yellow-label">
+        TRANSACTION-BASED AI
+      </span>
+
+      <h2>
+        คำแนะนำจากสิ่งที่คุณ “เพิ่งทำ”
+      </h2>
+
+      <p>
+        Road Map จะวางแผนล่วงหน้าจาก Life Stage
+        แต่ Dashboard จะดู Transaction และพฤติกรรมล่าสุด
+        เพื่อจับจังหวะที่ควรเสนอ Protection แบบใกล้เวลาจริง
+      </p>
+
+    </div>
+
+    <div class="dashboard-score">
+
+      <span>
+        LIVE
+      </span>
+
+      <strong>
+        92%
+      </strong>
+
+      <small>
+        Context Confidence
+      </small>
+
+    </div>
+
+  </div>
+
+
+  <div class="dashboard-grid">
+
+    <div class="dashboard-column">
+
+      <div class="section-title">
+
+        <div>
+
+          <span class="eyebrow">
+            RECENT TRANSACTIONS
+          </span>
+
+          <h2>
+            ช่วงนี้คุณทำอะไรไปบ้าง
+          </h2>
+
+        </div>
+
+        <span class="live-pill">
+          ● LIVE FEED
+        </span>
+
+      </div>
+
+
+      <div class="transaction-list">
+
+        <div class="transaction-item">
+
+          <div class="transaction-icon">
+            ✈️
+          </div>
+
+          <div>
+
+            <strong>
+              Japan Airlines
+            </strong>
+
+            <span>
+              ตั๋วเครื่องบิน กรุงเทพฯ → โตเกียว
+            </span>
+
+          </div>
+
+          <div class="transaction-value">
+
+            <strong>
+              -฿18,500
+            </strong>
+
+            <span>
+              วันนี้
+            </span>
+
+          </div>
+
+        </div>
+
+
+        <div class="transaction-item">
+
+          <div class="transaction-icon hotel">
+            🏨
+          </div>
+
+          <div>
+
+            <strong>
+              Osaka Hotel Booking
+            </strong>
+
+            <span>
+              ที่พัก 4 คืน
+            </span>
+
+          </div>
+
+          <div class="transaction-value">
+
+            <strong>
+              -฿12,400
+            </strong>
+
+            <span>
+              วันนี้
+            </span>
+
+          </div>
+
+        </div>
+
+
+        <div class="transaction-item">
+
+          <div class="transaction-icon car">
+            ⛽
+          </div>
+
+          <div>
+
+            <strong>
+              PTT Station
+            </strong>
+
+            <span>
+              เติมน้ำมันรถยนต์
+            </span>
+
+          </div>
+
+          <div class="transaction-value">
+
+            <strong>
+              -฿1,700
+            </strong>
+
+            <span>
+              2 วันก่อน
+            </span>
+
+          </div>
+
+        </div>
+
+
+        <div class="transaction-item">
+
+          <div class="transaction-icon health">
+            🏃
+          </div>
+
+          <div>
+
+            <strong>
+              Fitness Membership
+            </strong>
+
+            <span>
+              สมัครสมาชิกฟิตเนส 6 เดือน
+            </span>
+
+          </div>
+
+          <div class="transaction-value">
+
+            <strong>
+              -฿4,500
+            </strong>
+
+            <span>
+              5 วันก่อน
+            </span>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <div class="signal-box">
+
+        <div class="signal-icon">
+          ✦
+        </div>
+
+        <div>
+
+          <span>
+            AI DETECTED
+          </span>
+
+          <strong>
+            มีแนวโน้มเดินทางต่างประเทศเร็ว ๆ นี้
+          </strong>
+
+          <p>
+            พบ Transaction หมวด Flight + Hotel
+            ภายในวันเดียวกัน
+          </p>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <div class="dashboard-column recommendation-column">
+
+      <div class="section-title">
+
+        <div>
+
+          <span class="eyebrow">
+            TRANSACTION-BASED RECOMMENDATION
+          </span>
+
+          <h2>
+            AI แนะนำตอนนี้
+          </h2>
+
+        </div>
+
+      </div>
+
+
+      <div class="dashboard-recommend-card">
+
+        <div class="recommend-top">
+
+          <div class="dashboard-product-icon">
+            ✈️
+          </div>
+
+          <div>
+
+            <span>
+              TRIGGERED BY RECENT SPENDING
+            </span>
+
+            <h3>
+              Travel Protect Plus
+            </h3>
+
+            <p>
+              ไม่ได้แนะนำเพราะ Road Map อย่างเดียว
+              แต่เพราะ AI ตรวจพบ Transaction
+              ตั๋วเครื่องบินและโรงแรมล่าสุด
+            </p>
+
+          </div>
+
+        </div>
+
+
+        <div class="why-now">
+
+          <span>
+            WHY NOW?
+          </span>
+
+          <div>
+
+            <b>
+              01
+            </b>
+
+            <p>
+              เพิ่งซื้อตั๋วเครื่องบินต่างประเทศ
+            </p>
+
+          </div>
+
+
+          <div>
+
+            <b>
+              02
+            </b>
+
+            <p>
+              มี Transaction โรงแรมในต่างประเทศ
+            </p>
+
+          </div>
+
+
+          <div>
+
+            <b>
+              03
+            </b>
+
+            <p>
+              ยังไม่พบ Travel Policy ที่ Active
+            </p>
+
+          </div>
+
+        </div>
+
+
+        <div class="recommend-score">
+
+          <div>
+
+            <span>
+              AI Match
+            </span>
+
+            <strong>
+              96%
+            </strong>
+
+          </div>
+
+          <div>
+
+            <span>
+              ช่วงเวลาที่เหมาะ
+            </span>
+
+            <strong>
+              ตอนนี้
+            </strong>
+
+          </div>
+
+        </div>
+
+
+        <button class="primary-btn big" data-product="travel">
+          ดูรายละเอียดประกัน →
+        </button>
+
+      </div>
+
+
+      <div class="dashboard-secondary-card">
+
+        <div>
+
+          <span class="eyebrow">
+            NEXT SIGNAL
+          </span>
+
+          <h3>
+            Auto Protection Check
+          </h3>
+
+          <p>
+            พบการใช้งานรถต่อเนื่อง
+            ระบบจะจับตารอบต่ออายุและ
+            No-Claim Benefit ให้
+          </p>
+
+        </div>
+
+        <button class="mini-btn" data-go="roadmap">
+          ดู Road Map
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <div class="dashboard-explain">
+
+    <div>
+
+      <span>
+        ROAD MAP
+      </span>
+
+      <strong>
+        แนะนำจาก “แผนชีวิต”
+      </strong>
+
+      <p>
+        ดูสิ่งที่ควรทำในอนาคต
+        ตามช่วงเดือนและ Life Stage
+      </p>
+
+    </div>
+
+    <div class="vs">
+      VS
+    </div>
+
+    <div>
+
+      <span>
+        DASHBOARD
+      </span>
+
+      <strong>
+        แนะนำจาก “สิ่งที่เพิ่งเกิดขึ้น”
+      </strong>
+
+      <p>
+        ดู Transaction ล่าสุด
+        แล้วแนะนำสิ่งที่เหมาะในจังหวะนั้นทันที
+      </p>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<section id="productDetail" class="page">
+
+  <div class="page-header">
+
+    <button class="back-btn" data-go="roadmap">
+      ←
+    </button>
+
+    <div>
+
+      <span class="eyebrow">
+        RECOMMENDED FOR YOU
+      </span>
+
+      <h2>
+        รายละเอียดประกัน
+      </h2>
+
+    </div>
+
+    <div></div>
+
+  </div>
+
+
+  <div class="product-detail-hero">
+
+    <div id="detailProductIcon" class="detail-product-icon">
+      ✈️
+    </div>
+
+    <div>
+
+      <span id="detailMatch" class="product-match">
+        ✦ AI MATCH 96%
+      </span>
+
+      <h1 id="detailProductName">
+        Travel Protect Plus
+      </h1>
+
+      <p id="detailProductReason">
+        เหมาะกับคุณจากแผนชีวิตและ Transaction ล่าสุด
+      </p>
+
+    </div>
+
+  </div>
+
+
+  <div class="why-card">
+
+    <span class="eyebrow">
+      WHY FOR YOU
+    </span>
+
+    <h2>
+      ทำไม AI ถึงแนะนำ?
+    </h2>
+
+    <div id="detailReasons" class="why-list"></div>
+
+  </div>
+
+
+  <div class="coverage-section">
+
+    <div class="section-title">
+
+      <div>
+
+        <span class="eyebrow">
+          COVERAGE
+        </span>
+
+        <h2>
+          ความคุ้มครองหลัก
+        </h2>
+
+      </div>
+
+    </div>
+
+    <div id="detailCoverage" class="coverage-grid"></div>
+
+  </div>
+
+
+  <div class="price-section">
+
+    <div>
+
+      <span>
+        ราคาเริ่มต้น
+      </span>
+
+      <strong id="detailPrice">
+        ฿399 / Trip
+      </strong>
+
+    </div>
+
+    <button id="buyDemoBtn" class="primary-btn">
+      สนใจประกันนี้ →
+    </button>
+
+  </div>
+
+
+  <div class="prototype-note">
+    Prototype Demo •
+    ใช้จำลอง Flow จาก Recommendation
+    ไปยังหน้ารายละเอียดผลิตภัณฑ์
+  </div>
+
+</section>
+
+
+<section id="chat" class="page chat-page">
+
+  <div class="page-header">
+
+    <button class="back-btn" data-go="roadmap">
+      ←
+    </button>
+
+    <div>
+
+      <span class="eyebrow">
+        PERSONAL AI
+      </span>
+
+      <h2>
+        Chat with AI
+      </h2>
+
+    </div>
+
+    <div class="online-dot"></div>
+
+  </div>
+
+
+  <div class="chat-context">
+
+    <div class="chat-context-icon">
+      ✦
+    </div>
+
+    <div>
+
+      <strong>
+        AI รู้บริบทของคุณแล้ว
+      </strong>
+
+      <p>
+        Auto Safe Premium • No-Claim 2 ปี •
+        Flight + Hotel Transaction
+      </p>
+
+    </div>
+
+  </div>
+
+
+  <div class="chat-chips">
+
+    <button data-quick="No-Claim Benefit ของผมมีอะไรบ้าง">
+      Benefit ของผมมีอะไร?
+    </button>
+
+    <button data-quick="ปีหน้าผมจะได้ Benefit อะไรเพิ่ม">
+      ปีหน้าได้อะไรเพิ่ม?
+    </button>
+
+    <button data-quick="ถ้าเกิดรถชนเล็กน้อยควรเคลมไหม">
+      รถชนเล็กน้อยควรเคลมไหม?
+    </button>
+
+    <button data-quick="ทำไม Dashboard แนะนำ Travel Protect">
+      ทำไม Dashboard แนะนำ Travel?
+    </button>
+
+  </div>
+
+
+  <div id="chatMessages" class="chat-messages">
+
+    <div class="message-row">
+
+      <div class="ai-avatar">
+        AI
+      </div>
+
+      <div class="message">
+        สวัสดีครับ 👋 ตอนนี้คุณมี
+        <strong>No-Claim Streak 2 ปี</strong>
+        และ Dashboard เพิ่งตรวจพบ
+        Transaction การเดินทางต่างประเทศ
+        ถามผมได้เลยครับ
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <div class="chat-input-area">
+
+    <input
+      id="chatInput"
+      type="text"
+      placeholder="ถาม AI ได้เลย..."
+    >
+
+    <button id="sendChatBtn">
+      ↑
+    </button>
+
+  </div>
+
+</section>
+
+
+<!-- ================================================= -->
+<!-- BROKER LIST -->
+<!-- ================================================= -->
+
+<section id="brokerList" class="page">
+
+  <div class="broker-header">
+
+    <div>
+
+      <span class="eyebrow">
+        BROKER WORKSPACE
+      </span>
+
+      <h1>
+        Customer Data
+      </h1>
+
+      <p>
+        ดูลูกค้าที่ควรติดตาม
+        และ Insight จาก AI
+      </p>
+
+    </div>
+
+    <div class="broker-avatar">
+      BK
+    </div>
+
+  </div>
+
+
+  <div class="broker-search">
+
+    <span>
+      🔍
+    </span>
+
+    <input
+      id="brokerSearch"
+      type="text"
+      placeholder="ค้นหาลูกค้า..."
+    >
+
+  </div>
+
+
+  <div id="customerList" class="customer-list"></div>
+
+</section>
+
+
+<!-- ================================================= -->
+<!-- BROKER DETAIL -->
+<!-- ================================================= -->
+
+<section id="brokerDetail" class="page">
+
+  <div class="page-header">
+
+    <button class="back-btn" data-go="brokerList">
+      ←
+    </button>
+
+    <div>
+
+      <span class="eyebrow">
+        CUSTOMER 360°
+      </span>
+
+      <h2>
+        สรุปข้อมูลลูกค้า
+      </h2>
+
+    </div>
+
+    <div></div>
+
+  </div>
+
+
+  <div class="broker-profile-card">
+
+    <div id="brokerDetailAvatar" class="broker-detail-avatar">
+      ณ
+    </div>
+
+    <div>
+
+      <span class="active-chip">
+        ACTIVE CUSTOMER
+      </span>
+
+      <h2 id="brokerDetailName">
+        ณัฐ พงษ์พิพัฒน์
+      </h2>
+
+      <p id="brokerDetailInfo">
+        25 ปี • Software Engineer
+      </p>
+
+      <div id="brokerTags" class="broker-tags">
+        <span>เดินทางบ่อย</span>
+        <span>มีรถยนต์</span>
+        <span>No Claim 2 ปี</span>
+      </div>
+
+    </div>
+
+
+    <div class="broker-contact">
+      <button>💬 LINE</button>
+      <button>☎ โทร</button>
+      <button>◷ นัดหมาย</button>
+    </div>
+
+  </div>
+
+
+  <!-- ============================================= -->
+  <!-- CUSTOMER REQUIREMENTS ใหม่ -->
+  <!-- ============================================= -->
+
+  <div class="customer-requirements">
+
+    <div class="requirements-header">
+
+      <div>
+
+        <span class="yellow-label">
+          CUSTOMER REQUIREMENTS
+        </span>
+
+        <h2>
+          ความต้องการลูกค้า
+        </h2>
+
+        <p>
+          AI สรุปจากข้อมูลลูกค้า ประวัติการสนทนา
+          และ Preference ที่เคยระบุไว้
+        </p>
+
+      </div>
+
+
+      <div class="requirement-score">
+
+        <span>
+          PROFILE COMPLETENESS
+        </span>
+
+        <strong>
+          92%
+        </strong>
+
+      </div>
+
+    </div>
+
+
+    <div class="requirements-grid">
+
+
+      <div class="requirement-column">
+
+        <div class="requirement-title">
+
+          <div class="requirement-title-icon must">
+            ✓
+          </div>
+
+          <div>
+
+            <span>
+              MUST-HAVES
+            </span>
+
+            <strong>
+              ต้องมี
+            </strong>
+
+          </div>
+
+        </div>
+
+
+        <div id="mustHaveList" class="requirement-list"></div>
+
+      </div>
+
+
+      <div class="requirement-column">
+
+        <div class="requirement-title">
+
+          <div class="requirement-title-icon deal">
+            ×
+          </div>
+
+          <div>
+
+            <span>
+              DEAL BREAKERS
+            </span>
+
+            <strong>
+              ห้ามมี
+            </strong>
+
+          </div>
+
+        </div>
+
+
+        <div id="dealBreakerList" class="requirement-list"></div>
+
+      </div>
+
+    </div>
+
+
+    <div class="requirements-footer">
+
+      <div class="requirements-ai-icon">
+        AI
+      </div>
+
+      <div>
+
+        <span>
+          AI FILTER
+        </span>
+
+        <strong id="requirementFitText">
+          ระบบจะคัดเฉพาะประกันที่ผ่าน Must-haves
+          และไม่ชนกับ Deal Breakers
+        </strong>
+
+      </div>
+
+
+      <div class="requirement-match">
+
+        <small>
+          BEST MATCH
+        </small>
+
+        <strong id="requirementFitScore">
+          96%
+        </strong>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <div class="broker-detail-grid">
+
+
+    <div class="broker-box">
+
+      <span class="eyebrow">
+        RECENT UPDATE
+      </span>
+
+      <h3>
+        อัปเดตล่าสุด
+      </h3>
+
+      <div class="mini-update-grid">
+
+        <div>
+
+          🚗
+
+          <strong>
+            ซื้อรถใหม่
+          </strong>
+
+          <small>
+            2 วันก่อน
+          </small>
+
+        </div>
+
+        <div>
+
+          💍
+
+          <strong>
+            วางแผนแต่งงาน
+          </strong>
+
+          <small>
+            5 วันก่อน
+          </small>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <div class="broker-box">
+
+      <span class="eyebrow">
+        POLICIES
+      </span>
+
+      <h3>
+        กรมธรรม์
+      </h3>
+
+      <div class="broker-policy">
+
+        <b>
+          A
+        </b>
+
+        <div>
+
+          <strong>
+            Health Care Plus
+          </strong>
+
+          <span>
+            หมดอายุ 12/2028
+          </span>
+
+        </div>
+
+      </div>
+
+      <div class="broker-policy">
+
+        <b>
+          B
+        </b>
+
+        <div>
+
+          <strong>
+            Auto Safe Premium
+          </strong>
+
+          <span>
+            No Claim 2 ปี
+          </span>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <div class="broker-ai-card">
+
+    <span class="yellow-label">
+      AI RECOMMENDATION
+    </span>
+
+    <h2>
+      Next Best Action
+    </h2>
+
+
+    <div class="broker-ai-summary">
+
+      <div>
+
+        <strong id="brokerRecommendedProduct">
+          Auto Elite Plus
+        </strong>
+
+        <p id="brokerRecommendedReason">
+          ผ่าน Must-haves ครบ และไม่ชน Deal Breakers ของลูกค้า
+        </p>
+
+      </div>
+
+
+      <div class="ai-fit-badge">
+
+        <span>
+          FIT SCORE
+        </span>
+
+        <strong id="brokerRecommendationScore">
+          96%
+        </strong>
+
+      </div>
+
+    </div>
+
+
+    <div class="broker-ai-row">
+
+      <b>
+        01
+      </b>
+
+      <div>
+
+        <strong>
+          ใช้ Requirement เป็นตัวกรองก่อนเสนอขาย
+        </strong>
+
+        <p id="brokerRequirementSummary">
+          เน้นเหมาจ่าย ซ่อมห้าง และหลีกเลี่ยง Deductible สูง
+        </p>
+
+      </div>
+
+      <span>
+        ✓
+      </span>
+
+    </div>
+
+
+    <div class="broker-ai-row">
+
+      <b>
+        02
+      </b>
+
+      <div>
+
+        <strong>
+          ใช้ No-Claim Benefit เป็น Hook
+        </strong>
+
+        <p>
+          แสดงให้ลูกค้าเห็นว่า
+          การรักษาประวัติไม่เคลม
+          ช่วยสร้าง Benefit ระยะยาวอย่างไร
+        </p>
+
+      </div>
+
+      <span>
+        97%
+      </span>
+
+    </div>
+
+
+    <div class="broker-ai-row">
+
+      <b>
+        03
+      </b>
+
+      <div>
+
+        <strong>
+          ใช้ Transaction ล่าสุดสร้างจังหวะขาย
+        </strong>
+
+        <p>
+          หากมี Transaction ที่สัมพันธ์กับความเสี่ยง
+          AI จะเตือน Broker ให้ติดต่อในเวลาที่เหมาะสม
+        </p>
+
+      </div>
+
+      <span>
+        94%
+      </span>
+
+    </div>
+
+  </div>
+
+</section>
+
+</main>
+
+
+<!-- ================================================= -->
+<!-- SURVEY INTRO -->
+<!-- ================================================= -->
+
+<div id="surveyIntro" class="modal-overlay">
+
+  <div class="survey-intro-card">
+
+    <button id="closeSurveyIntro" class="modal-close">
+      ×
+    </button>
+
+    <span class="eyebrow">
+      QUICK UPDATE
+    </span>
+
+    <h2>
+      ทำแบบสอบถาม
+      <br>
+      รับ +100 Point
+    </h2>
+
+    <div class="survey-mascot">
+      (•ᴗ•)
+    </div>
+
+    <p>
+      ใช้เวลาไม่ถึง 1 นาที
+      เพื่อให้ AI ปรับ Road Map
+      และคำแนะนำให้ตรงกับชีวิตล่าสุดของคุณ
+    </p>
+
+    <button id="startSurvey" class="black-btn big">
+      ทำเลย! →
+    </button>
+
+  </div>
+
+</div>
+
+
+<div id="surveyModal" class="modal-overlay">
+
+  <div class="survey-card">
+
+    <div class="survey-header">
+
+      <div>
+
+        <span class="eyebrow">
+          UPDATE YOUR LIFE
+        </span>
+
+        <h3>
+          Personalized Survey
+        </h3>
+
+      </div>
+
+      <button id="minimizeSurvey">
+        —
+      </button>
+
+    </div>
+
+
+    <div class="survey-progress-head">
+
+      <span>
+        Progress
+      </span>
+
+      <strong id="surveyCount">
+        1 / 4
+      </strong>
+
+    </div>
+
+
+    <div class="survey-progress-bar">
+      <div id="surveyProgress"></div>
+    </div>
+
+
+    <div id="surveyQuestion"></div>
+
+
+    <div class="survey-actions">
+
+      <button id="surveyPrev" class="secondary-btn">
+        ←
+      </button>
+
+      <button id="surveyNext" class="primary-btn">
+        NEXT →
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<button id="minimizedSurvey" class="minimized-survey">
+  ✨ ทำแบบสอบถามต่อ
+</button>
+
+
+<script>
+const pages =
+  document.querySelectorAll(".page");
+
+
+function showPage(id){
+
+  pages.forEach(page=>{
+    page.classList.remove("active");
+  });
+
+  const target =
+    document.getElementById(id);
+
+  if(!target) return;
+
+  target.classList.add("active");
+
+  window.scrollTo({
+    top:0,
+    behavior:"smooth"
+  });
+
+}
+
+
+document.addEventListener(
+  "click",
+  event=>{
+
+    const button =
+      event.target.closest("[data-go]");
+
+    if(button){
+
+      showPage(
+        button.dataset.go
+      );
+
+    }
+
+  }
+);
+
+
+const modeButtons =
+  document.querySelectorAll(".mode-btn");
+
+
+modeButtons.forEach(button=>{
+
+  button.addEventListener(
+    "click",
+    ()=>{
+
+      modeButtons.forEach(item=>{
+        item.classList.remove("active");
+      });
+
+      button.classList.add("active");
+
+      if(
+        button.dataset.mode === "broker"
+      ){
+
+        showPage("brokerList");
+
+      }else{
+
+        showPage("home");
+
+      }
+
+    }
+  );
+
+});
+
+
+const infoTabs =
+  document.querySelectorAll(".info-tab");
+
+const tabContents =
+  document.querySelectorAll(".tab-content");
+
+
+infoTabs.forEach(tab=>{
+
+  tab.addEventListener(
+    "click",
+    ()=>{
+
+      infoTabs.forEach(item=>{
+        item.classList.remove("active");
+      });
+
+      tabContents.forEach(item=>{
+        item.classList.remove("active");
+      });
+
+      tab.classList.add("active");
+
+      const target =
+        document.getElementById(
+          `tab-${tab.dataset.tab}`
+        );
+
+      if(target){
+        target.classList.add("active");
+      }
+
+    }
+  );
+
+});
+
+
+let surveyHasOpened = false;
+
+
+document
+  .getElementById("updateProfileBtn")
+  .addEventListener(
+    "click",
+    ()=>{
+
+      const name =
+        document
+          .getElementById("firstName")
+          .value
+          .trim()
+        || "ณัฐ";
+
+      const age =
+        document
+          .getElementById("age")
+          .value
+        || "25";
+
+      document
+        .getElementById("roadmapName")
+        .textContent =
+        name;
+
+      document
+        .getElementById("roadmapAge")
+        .textContent =
+        age;
+
+      showPage("roadmap");
+
+      if(!surveyHasOpened){
+
+        surveyHasOpened = true;
+
+        setTimeout(
+          ()=>{
+
+            document
+              .getElementById("surveyIntro")
+              .classList
+              .add("active");
+
+          },
+          600
+        );
+
+      }
+
+    }
+  );
+
+
+let currentYearIndex = 0;
+
+const roadmapYears = [
+  2026,
+  2027
+];
+
+const roadmapTrack =
+  document.getElementById("roadmapTrack");
+
+const yearLabel =
+  document.getElementById("yearLabel");
+
+
+function updateRoadmapYear(){
+
+  roadmapTrack.style.transform =
+    `translateX(-${currentYearIndex * 50}%)`;
+
+  yearLabel.textContent =
+    roadmapYears[currentYearIndex];
+
+  const isFirst =
+    currentYearIndex === 0;
+
+  const isLast =
+    currentYearIndex ===
+    roadmapYears.length - 1;
+
+  document
+    .getElementById("prevYear")
+    .disabled =
+    isFirst;
+
+  document
+    .getElementById("scrollPrev")
+    .disabled =
+    isFirst;
+
+  document
+    .getElementById("nextYear")
+    .disabled =
+    isLast;
+
+  document
+    .getElementById("scrollNext")
+    .disabled =
+    isLast;
+
+}
+
+
+function moveYear(direction){
+
+  currentYearIndex =
+    Math.max(
+      0,
+      Math.min(
+        roadmapYears.length - 1,
+        currentYearIndex + direction
+      )
+    );
+
+  updateRoadmapYear();
+
+}
+
+
+document
+  .getElementById("prevYear")
+  .addEventListener(
+    "click",
+    ()=>moveYear(-1)
+  );
+
+
+document
+  .getElementById("nextYear")
+  .addEventListener(
+    "click",
+    ()=>moveYear(1)
+  );
+
+
+document
+  .getElementById("scrollPrev")
+  .addEventListener(
+    "click",
+    ()=>moveYear(-1)
+  );
+
+
+document
+  .getElementById("scrollNext")
+  .addEventListener(
+    "click",
+    ()=>moveYear(1)
+  );
+
+
+updateRoadmapYear();
+
+
+document
+  .getElementById("focusBenefitBtn")
+  .addEventListener(
+    "click",
+    ()=>{
+
+      const panel =
+        document
+          .getElementById("benefitPanel");
+
+      panel.classList.remove("flash");
+
+      void panel.offsetWidth;
+
+      panel.classList.add("flash");
+
+      if(
+        window.innerWidth < 901
+      ){
+
+        panel.scrollIntoView({
+          behavior:"smooth",
+          block:"start"
+        });
+
+      }
+
+    }
+  );
+
+
+document
+  .querySelectorAll(".benefit-policy-tab")
+  .forEach(tab=>{
+
+    tab.addEventListener(
+      "click",
+      ()=>{
+
+        document
+          .querySelectorAll(".benefit-policy-tab")
+          .forEach(item=>{
+            item.classList.remove("active");
+          });
+
+        tab.classList.add("active");
+
+        showToast(
+          "Demo: เปลี่ยนมุมมอง Benefit ของกรมธรรม์แล้ว"
+        );
+
+      }
+    );
+
+  });
+
+
+const products = {
+
+  travel:{
+    icon:"✈️",
+    match:"✦ AI MATCH 96%",
+    name:"Travel Protect Plus",
+
+    reason:
+      "เหมาะกับคุณเพราะทั้ง Road Map และ Transaction ล่าสุดสะท้อนว่าคุณกำลังเดินทางต่างประเทศ",
+
+    reasons:[
+      "เพิ่งซื้อตั๋วเครื่องบินต่างประเทศ",
+      "มีรายการจองโรงแรมล่าสุด",
+      "ยังไม่พบ Travel Policy ที่ Active"
+    ],
+
+    coverage:[
+      {
+        icon:"🏥",
+        title:"Emergency Medical",
+        text:"ค่ารักษาฉุกเฉินระหว่างเดินทาง"
+      },
+      {
+        icon:"✈️",
+        title:"Flight Delay",
+        text:"ความคุ้มครองกรณีเที่ยวบินล่าช้า"
+      },
+      {
+        icon:"🧳",
+        title:"Baggage",
+        text:"สัมภาระสูญหายหรือเสียหาย"
+      }
+    ],
+
+    price:"฿399 / Trip"
+  },
+
+
+  health:{
+    icon:"❤️",
+    match:"✦ AI MATCH 89%",
+    name:"Health Upgrade",
+
+    reason:
+      "AI พบว่าความคุ้มครองสุขภาพปัจจุบันยังสามารถเพิ่มวงเงินได้",
+
+    reasons:[
+      "คุณให้ความสำคัญกับสุขภาพ",
+      "มีพฤติกรรมออกกำลังกายสม่ำเสมอ",
+      "วงเงินเดิมอาจไม่พอกับค่ารักษาในอนาคต"
+    ],
+
+    coverage:[
+      {
+        icon:"🏥",
+        title:"Hospital",
+        text:"วงเงินค่ารักษาพยาบาล"
+      },
+      {
+        icon:"🩺",
+        title:"Specialist",
+        text:"ค่ารักษากับแพทย์เฉพาะทาง"
+      },
+      {
+        icon:"💊",
+        title:"Treatment",
+        text:"การรักษาต่อเนื่อง"
+      }
+    ],
+
+    price:"ประมาณ ฿1,590 / เดือน"
+  },
+
+
+  family:{
+    icon:"👨‍👩‍👧",
+    match:"✦ AI MATCH 91%",
+    name:"Family Protection Plan",
+
+    reason:
+      "AI พบว่าคุณมีแผนแต่งงานและอาจมีภาระทางการเงินเพิ่มขึ้นในอนาคต",
+
+    reasons:[
+      "มีแผนแต่งงานใน 2–3 ปี",
+      "ต้องการดูแลครอบครัว",
+      "ควรวางแผนก่อนภาระเพิ่ม"
+    ],
+
+    coverage:[
+      {
+        icon:"🛡️",
+        title:"Life",
+        text:"ความคุ้มครองชีวิต"
+      },
+      {
+        icon:"❤️",
+        title:"Critical Illness",
+        text:"โรคร้ายแรง"
+      },
+      {
+        icon:"👨‍👩‍👧",
+        title:"Family",
+        text:"รองรับภาระของครอบครัว"
+      }
+    ],
+
+    price:"ประมาณ ฿990 / เดือน"
+  }
+
+};
+
+
+document
+  .querySelectorAll("[data-product]")
+  .forEach(button=>{
+
+    button.addEventListener(
+      "click",
+      ()=>{
+
+        openProduct(
+          button.dataset.product
+        );
+
+      }
+    );
+
+  });
+
+
+function openProduct(key){
+
+  const product =
+    products[key];
+
+  if(!product) return;
+
+  document
+    .getElementById("detailProductIcon")
+    .textContent =
+    product.icon;
+
+  document
+    .getElementById("detailMatch")
+    .textContent =
+    product.match;
+
+  document
+    .getElementById("detailProductName")
+    .textContent =
+    product.name;
+
+  document
+    .getElementById("detailProductReason")
+    .textContent =
+    product.reason;
+
+  document
+    .getElementById("detailPrice")
+    .textContent =
+    product.price;
+
+  document
+    .getElementById("detailReasons")
+    .innerHTML =
+    product.reasons
+      .map(
+        reason=>
+          `<div class="why-item">✓ ${reason}</div>`
+      )
+      .join("");
+
+  document
+    .getElementById("detailCoverage")
+    .innerHTML =
+    product.coverage
+      .map(
+        item=>
+          `
+          <div class="coverage-card">
+
+            <span>
+              ${item.icon}
+            </span>
+
+            <strong>
+              ${item.title}
+            </strong>
+
+            <p>
+              ${item.text}
+            </p>
+
+          </div>
+          `
+      )
+      .join("");
+
+  showPage("productDetail");
+
+}
+
+
+document
+  .getElementById("buyDemoBtn")
+  .addEventListener(
+    "click",
+    ()=>{
+
+      showToast(
+        "Demo: ส่งคำขอให้ Broker ติดต่อกลับแล้ว ✓"
+      );
+
+    }
+  );
+
+
+document
+  .getElementById("refreshDashboard")
+  .addEventListener(
+    "click",
+    ()=>{
+
+      showToast(
+        "AI กำลังวิเคราะห์ Transaction ล่าสุด..."
+      );
+
+      setTimeout(
+        ()=>{
+
+          showToast(
+            "พบสัญญาณ Travel: Flight + Hotel ✨"
+          );
+
+        },
+        850
+      );
+
+    }
+  );
+
+
+const surveyIntro =
+  document.getElementById("surveyIntro");
+
+const surveyModal =
+  document.getElementById("surveyModal");
+
+const minimizedSurvey =
+  document.getElementById("minimizedSurvey");
+
+const surveyFab =
+  document.getElementById("surveyFab");
+
+const openSurveyShortcut =
+  document.getElementById("openSurveyShortcut");
+
+
+function openSurveyIntro(){
+
+  surveyIntro
+    .classList
+    .add("active");
+
+}
+
+
+surveyFab.addEventListener(
+  "click",
+  openSurveyIntro
+);
+
+
+openSurveyShortcut.addEventListener(
+  "click",
+  openSurveyIntro
+);
+
+
+document
+  .getElementById("closeSurveyIntro")
+  .addEventListener(
+    "click",
+    ()=>{
+
+      surveyIntro
+        .classList
+        .remove("active");
+
+    }
+  );
+
+
+document
+  .getElementById("startSurvey")
+  .addEventListener(
+    "click",
+    ()=>{
+
+      surveyIntro
+        .classList
+        .remove("active");
+
+      surveyModal
+        .classList
+        .add("active");
+
+      renderSurvey();
+
+    }
+  );
+
+
+document
+  .getElementById("minimizeSurvey")
+  .addEventListener(
+    "click",
+    ()=>{
+
+      surveyModal
+        .classList
+        .remove("active");
+
+      minimizedSurvey
+        .classList
+        .add("active");
+
+    }
+  );
+
+
+minimizedSurvey
+  .addEventListener(
+    "click",
+    ()=>{
+
+      minimizedSurvey
+        .classList
+        .remove("active");
+
+      surveyModal
+        .classList
+        .add("active");
+
+    }
+  );
+
+
+const surveyData = [
+
+  {
+    question:
+      "ตอนนี้คุณให้ความสำคัญกับเรื่องไหนมากที่สุด?",
+
+    options:[
+      "สุขภาพ",
+      "การเงิน",
+      "ครอบครัว",
+      "การท่องเที่ยว"
+    ]
+  },
+
+  {
+    question:
+      "ช่วง 3 เดือนนี้มี Life Event ใหม่ไหม?",
+
+    options:[
+      "ซื้อรถ / เปลี่ยนรถ",
+      "เริ่มเดินทางบ่อยขึ้น",
+      "แต่งงาน / วางแผนครอบครัว",
+      "ยังไม่มี"
+    ]
+  },
+
+  {
+    question:
+      "คุณอยากให้ AI เตือนเรื่องไหน?",
+
+    options:[
+      "ต่ออายุประกัน",
+      "สิทธิและ Benefit",
+      "ความคุ้มครองที่ยังขาด",
+      "ทุกอย่าง"
+    ]
+  },
+
+  {
+    question:
+      "รูปแบบคำแนะนำที่คุณชอบ?",
+
+    options:[
+      "สั้นและชัด",
+      "มีตัวเลขเปรียบเทียบ",
+      "อธิบายละเอียด",
+      "ให้ AI เลือก"
+    ]
+  }
+
+];
+
+
+let surveyIndex = 0;
+let surveyCompleted = false;
+
+
+function renderSurvey(){
+
+  const current =
+    surveyData[surveyIndex];
+
+  document
+    .getElementById("surveyCount")
+    .textContent =
+    `${surveyIndex + 1} / ${surveyData.length}`;
+
+  document
+    .getElementById("surveyProgress")
+    .style
+    .width =
+    `${((surveyIndex + 1) / surveyData.length) * 100}%`;
+
+  document
+    .getElementById("surveyQuestion")
+    .innerHTML =
+    `
+      <h2>
+        ${surveyIndex + 1})
+        ${current.question}
+      </h2>
+
+      ${current.options
+        .map(
+          (option,index)=>
+          `
+            <label class="survey-option">
+
+              <input
+                type="radio"
+                name="surveyOption"
+                value="${option}"
+                ${index === 0 ? "checked" : ""}
+              >
+
+              ${option}
+
+            </label>
+          `
+        )
+        .join("")
+      }
+    `;
+
+  document
+    .getElementById("surveyPrev")
+    .style
+    .visibility =
+    surveyIndex === 0
+      ? "hidden"
+      : "visible";
+
+  document
+    .getElementById("surveyNext")
+    .textContent =
+    surveyIndex ===
+    surveyData.length - 1
+      ? "SUBMIT ✓"
+      : "NEXT →";
+
+}
+
+
+document
+  .getElementById("surveyNext")
+  .addEventListener(
+    "click",
+    ()=>{
+
+      if(
+        surveyIndex <
+        surveyData.length - 1
+      ){
+
+        surveyIndex++;
+
+        renderSurvey();
+
+        return;
+
+      }
+
+      surveyModal
+        .classList
+        .remove("active");
+
+      minimizedSurvey
+        .classList
+        .remove("active");
+
+      surveyIndex = 0;
+
+      if(!surveyCompleted){
+
+        surveyCompleted = true;
+
+        document
+          .getElementById("pointValue")
+          .textContent =
+          "1,350";
+
+        showToast(
+          "ทำแบบสอบถามสำเร็จ +100 Points ✨"
+        );
+
+      }else{
+
+        showToast(
+          "อัปเดตคำตอบแบบสอบถามแล้ว ✓"
+        );
+
+      }
+
+    }
+  );
+
+
+document
+  .getElementById("surveyPrev")
+  .addEventListener(
+    "click",
+    ()=>{
+
+      if(surveyIndex > 0){
+
+        surveyIndex--;
+
+        renderSurvey();
+
+      }
+
+    }
+  );
+
+
+const chatInput =
+  document.getElementById("chatInput");
+
+const chatMessages =
+  document.getElementById("chatMessages");
+
+
+document
+  .getElementById("sendChatBtn")
+  .addEventListener(
+    "click",
+    sendChatMessage
+  );
+
+
+chatInput.addEventListener(
+  "keydown",
+  event=>{
+
+    if(
+      event.key === "Enter"
+    ){
+
+      sendChatMessage();
+
+    }
+
+  }
+);
+
+
+document
+  .querySelectorAll("[data-quick]")
+  .forEach(button=>{
+
+    button.addEventListener(
+      "click",
+      ()=>{
+
+        chatInput.value =
+          button.dataset.quick;
+
+        sendChatMessage();
+
+      }
+    );
+
+  });
+
+
+function sendChatMessage(){
+
+  const text =
+    chatInput
+      .value
+      .trim();
+
+  if(!text) return;
+
+  chatMessages.insertAdjacentHTML(
+    "beforeend",
+    `
+      <div class="message-row user">
+
+        <div class="message">
+          ${escapeHTML(text)}
+        </div>
+
+      </div>
+    `
+  );
+
+  chatInput.value = "";
+
+  showTyping();
+
+  setTimeout(
+    ()=>{
+
+      removeTyping();
+
+      chatMessages.insertAdjacentHTML(
+        "beforeend",
+        `
+          <div class="message-row">
+
+            <div class="ai-avatar">
+              AI
+            </div>
+
+            <div class="message">
+              ${generateAIReply(text)}
+            </div>
+
+          </div>
+        `
+      );
+
+      window.scrollTo({
+        top:document.body.scrollHeight,
+        behavior:"smooth"
+      });
+
+    },
+    700
+  );
+
+}
+
+
+function showTyping(){
+
+  removeTyping();
+
+  chatMessages.insertAdjacentHTML(
+    "beforeend",
+    `
+      <div
+        id="typingMessage"
+        class="message-row"
+      >
+
+        <div class="ai-avatar">
+          AI
+        </div>
+
+        <div class="message">
+
+          <div class="typing-dots">
+            <i></i>
+            <i></i>
+            <i></i>
+          </div>
+
+        </div>
+
+      </div>
+    `
+  );
+
+}
+
+
+function removeTyping(){
+
+  const typing =
+    document
+      .getElementById("typingMessage");
+
+  if(typing){
+    typing.remove();
+  }
+
+}
+
+
+function generateAIReply(message){
+
+  const text =
+    message.toLowerCase();
+
+
+  if(
+    text.includes("dashboard")
+    ||
+    text.includes("transaction")
+    ||
+    text.includes("travel")
+    ||
+    text.includes("ทำไม")
+  ){
+
+    return `
+      Dashboard แนะนำ
+      <strong>Travel Protect Plus</strong>
+      เพราะพบ Transaction ล่าสุดเป็น
+      <strong>ตั๋วเครื่องบิน + โรงแรม</strong>
+      ภายในช่วงเวลาเดียวกันครับ
+
+      <br><br>
+
+      ระบบจึงตีความว่าคุณกำลังจะเดินทางต่างประเทศ
+      และยังไม่พบ Travel Policy ที่ Active
+      ทำให้จังหวะนี้มี AI Match ประมาณ
+      <strong>96%</strong>
+    `;
+
+  }
+
+
+  if(
+    text.includes("benefit")
+    ||
+    text.includes("สิทธิ")
+    ||
+    text.includes("ได้อะไร")
+    ||
+    text.includes("โนเคลม")
+  ){
+
+    return `
+      ตอนนี้คุณมี
+      <strong>No-Claim Streak 2 ปี</strong>
+      และอยู่ที่ระดับจำลอง
+      <strong>30%</strong>
+
+      <br><br>
+
+      Benefit ที่แอปแสดงให้คุณเห็น ได้แก่
+
+      <br>
+      ✓ ส่วนลดเบี้ยจากประวัติไม่เคลม
+
+      <br>
+      ✓ Renewal Reminder
+
+      <br>
+      ✓ AI Claim Advisor
+
+      <br>
+      ✓ ติดตาม No-Claim Streak
+
+      <br><br>
+
+      เป้าหมายถัดไปคือ
+      <strong>40%</strong>
+      ครับ
+    `;
+
+  }
+
+
+  if(
+    text.includes("ปีหน้า")
+    ||
+    text.includes("เพิ่ม")
+  ){
+
+    return `
+      ถ้ารักษา No-Claim Streak ต่ออีกหนึ่งปี
+      Benefit Level ในตัวอย่างอาจขยับจาก
+
+      <strong>
+        30% → 40%
+      </strong>
+
+      <br><br>
+
+      จากเบี้ยตัวอย่าง
+      ฿12,900 ต่อปี
+      ส่วนต่าง 10% คิดเป็นประมาณ
+
+      <strong>
+        ฿1,290
+      </strong>
+
+      ครับ
+    `;
+
+  }
+
+
+  if(
+    text.includes("ชน")
+    ||
+    text.includes("เคลม")
+    ||
+    text.includes("อุบัติเหตุ")
+  ){
+
+    return `
+      ถ้าเกิดอุบัติเหตุจริง
+      ความปลอดภัยและเงื่อนไขกรมธรรม์ต้องมาก่อนครับ
+
+      <br><br>
+
+      AI สามารถช่วยสรุปให้คุณเห็น
+
+      <br>
+      • ค่าซ่อมโดยประมาณ
+
+      <br>
+      • ค่าเสียหายส่วนแรก
+
+      <br>
+      • ผลที่อาจเกิดกับ No-Claim Benefit
+
+      <br><br>
+
+      เพื่อใช้ประกอบการตัดสินใจ
+      ไม่ใช่ให้หลีกเลี่ยงการเคลมในกรณีที่จำเป็นครับ
+    `;
+
+  }
+
+
+  if(
+    text.includes("road")
+    ||
+    text.includes("แผน")
+  ){
+
+    return `
+      Recommendation มีอยู่
+      <strong>2 แบบ</strong> ครับ
+
+      <br><br>
+
+      <strong>Road Map</strong>
+      = แนะนำจากแผนชีวิตล่วงหน้า
+      แบ่งเป็นเดือน 1–3, 4–6, 7–9 และ 10–12
+
+      <br><br>
+
+      <strong>Dashboard</strong>
+      = แนะนำจาก Transaction
+      หรือสิ่งที่เพิ่งเกิดขึ้นในชีวิตจริง
+
+      <br><br>
+
+      เพราะฉะนั้นคำแนะนำสามารถเปลี่ยนได้ทันที
+      แม้จะยังไม่ถึงช่วงใน Road Map ครับ
+    `;
+
+  }
+
+
+  return `
+    ผมตอบได้จากบริบท Demo ครับ 😊
+  `;
+
+}
+
+
+function escapeHTML(text){
+
+  return text
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#039;");
+
+}
+
+
+/* ================================================= */
+/* BROKER DATA */
+/* ================================================= */
+
+const customers = [
+
+  {
+    id:1,
+    name:"ณัฐ พงษ์พิพัฒน์",
+    age:25,
+    job:"Software Engineer",
+    opportunity:97,
+    insight:"No-Claim + Travel",
+
+    tags:[
+      "เดินทางบ่อย",
+      "มีรถยนต์",
+      "No Claim 2 ปี"
+    ],
+
+    mustHaves:[
+      {
+        title:"คุ้มครองแบบเหมาจ่าย",
+        detail:"ไม่ต้องแบ่งวงเงินย่อยหลายหมวด"
+      },
+      {
+        title:"ซ่อมห้าง",
+        detail:"ต้องการศูนย์บริการมาตรฐาน"
+      },
+      {
+        title:"เคลมง่าย",
+        detail:"ขั้นตอนไม่ซับซ้อน"
+      },
+      {
+        title:"ช่วยเหลือฉุกเฉิน 24 ชม.",
+        detail:"มีบริการระหว่างเดินทาง"
+      }
+    ],
+
+    dealBreakers:[
+      {
+        title:"Deductible สูง",
+        detail:"ไม่ต้องการจ่ายค่าเสียหายส่วนแรกสูง"
+      },
+      {
+        title:"เบี้ยเกิน 3,000 บาท/เดือน",
+        detail:"ต้องอยู่ในงบที่กำหนด"
+      },
+      {
+        title:"ต้องสำรองจ่ายเยอะ",
+        detail:"ไม่ต้องการกระทบ Cash Flow"
+      },
+      {
+        title:"เงื่อนไขเคลมซับซ้อน",
+        detail:"ไม่ต้องการเอกสารหลายขั้นตอน"
+      }
+    ],
+
+    fitScore:96,
+    product:"Auto Elite Plus",
+    recommendation:
+      "เหมาจ่าย + ซ่อมห้าง + มี Roadside Assistance และไม่ชนกับงบลูกค้า"
+  },
+
+
+  {
+    id:2,
+    name:"มินตรา วัฒนากุล",
+    age:31,
+    job:"Marketing Manager",
+    opportunity:92,
+    insight:"Family Protection",
+
+    tags:[
+      "วางแผนครอบครัว",
+      "รายได้มั่นคง",
+      "เดินทางบ้าง"
+    ],
+
+    mustHaves:[
+      {
+        title:"คุ้มครองครอบครัว",
+        detail:"มีทุนประกันเพียงพอ"
+      },
+      {
+        title:"โรคร้ายแรง",
+        detail:"ต้องมี Critical Illness"
+      },
+      {
+        title:"เบี้ยคงที่",
+        detail:"วางแผนค่าใช้จ่ายได้ง่าย"
+      }
+    ],
+
+    dealBreakers:[
+      {
+        title:"เบี้ยผันผวนสูง",
+        detail:"ไม่ต้องการค่าใช้จ่ายไม่แน่นอน"
+      },
+      {
+        title:"ข้อยกเว้นเยอะ",
+        detail:"ต้องการเงื่อนไขเข้าใจง่าย"
+      }
+    ],
+
+    fitScore:93,
+    product:"Family Secure Plus",
+    recommendation:
+      "ทุนประกันครอบครัวสูง พร้อม Critical Illness และเบี้ยอยู่ในงบ"
+  },
+
+
+  {
+    id:3,
+    name:"ธนกร วิชัย",
+    age:35,
+    job:"Business Owner",
+    opportunity:88,
+    insight:"Health Upgrade",
+
+    tags:[
+      "เจ้าของธุรกิจ",
+      "สุขภาพ",
+      "รายได้สูง"
+    ],
+
+    mustHaves:[
+      {
+        title:"วงเงินรักษาสูง",
+        detail:"อย่างน้อย 5 ล้านบาท"
+      },
+      {
+        title:"โรงพยาบาลเอกชน",
+        detail:"ต้องเข้ารักษาได้สะดวก"
+      },
+      {
+        title:"ห้องเดี่ยว",
+        detail:"ต้องการความเป็นส่วนตัว"
+      }
+    ],
+
+    dealBreakers:[
+      {
+        title:"วงเงินต่ำ",
+        detail:"ไม่ต้องการ Limit ต่ำ"
+      },
+      {
+        title:"ต้องสำรองจ่าย",
+        detail:"ต้องการ Direct Billing"
+      }
+    ],
+
+    fitScore:94,
+    product:"Health Elite",
+    recommendation:
+      "วงเงินสูง เหมาจ่าย และมี Direct Billing กับโรงพยาบาลเครือข่าย"
+  },
+
+
+  {
+    id:4,
+    name:"พิมพ์ชนก ศรีสุข",
+    age:29,
+    job:"Designer",
+    opportunity:84,
+    insight:"Travel Protection",
+
+    tags:[
+      "เดินทางต่างประเทศ",
+      "Freelance",
+      "ชอบเที่ยว"
+    ],
+
+    mustHaves:[
+      {
+        title:"ค่ารักษาต่างประเทศ",
+        detail:"ต้องครอบคลุม Emergency Medical"
+      },
+      {
+        title:"Flight Delay",
+        detail:"ต้องมีชดเชยเที่ยวบินล่าช้า"
+      },
+      {
+        title:"กระเป๋าหาย",
+        detail:"ต้องมี Baggage Coverage"
+      }
+    ],
+
+    dealBreakers:[
+      {
+        title:"ซื้อยาก",
+        detail:"ต้องซื้อผ่านมือถือได้"
+      },
+      {
+        title:"เคลมเอกสารเยอะ",
+        detail:"ต้องการ Digital Claim"
+      }
+    ],
+
+    fitScore:95,
+    product:"Travel Protect Plus",
+    recommendation:
+      "คุ้มครอง Medical + Delay + Baggage และทำเคลมออนไลน์ได้"
+  },
+
+
+  {
+    id:5,
+    name:"วรัญญา ธีรพงศ์",
+    age:38,
+    job:"Teacher",
+    opportunity:82,
+    insight:"Retirement Plan",
+
+    tags:[
+      "วางแผนเกษียณ",
+      "รายได้ประจำ",
+      "ความเสี่ยงต่ำ"
+    ],
+
+    mustHaves:[
+      {
+        title:"เงินเกษียณแน่นอน",
+        detail:"ต้องการวางแผนระยะยาว"
+      },
+      {
+        title:"เบี้ยไม่สูง",
+        detail:"ต้องเหมาะกับรายได้ประจำ"
+      }
+    ],
+
+    dealBreakers:[
+      {
+        title:"ความเสี่ยงสูง",
+        detail:"ไม่ต้องการความผันผวนสูง"
+      },
+      {
+        title:"ระยะสัญญาสั้น",
+        detail:"ต้องการแผนระยะยาว"
+      }
+    ],
+
+    fitScore:89,
+    product:"Retirement Secure",
+    recommendation:
+      "แผนระยะยาว เน้นความแน่นอนและเบี้ยที่เหมาะกับรายได้"
+  },
+
+
+  {
+    id:6,
+    name:"ปกรณ์ วิเศษ",
+    age:26,
+    job:"Engineer",
+    opportunity:79,
+    insight:"Auto Insurance",
+
+    tags:[
+      "รถใหม่",
+      "เดินทางทำงาน",
+      "งบจำกัด"
+    ],
+
+    mustHaves:[
+      {
+        title:"ซ่อมห้าง",
+        detail:"รถใหม่ต้องเข้าศูนย์"
+      },
+      {
+        title:"เบี้ยไม่เกินงบ",
+        detail:"ต้องการคุมค่าใช้จ่าย"
+      },
+      {
+        title:"Roadside Assistance",
+        detail:"เดินทางไกลบ่อย"
+      }
+    ],
+
+    dealBreakers:[
+      {
+        title:"เบี้ยสูง",
+        detail:"เกินงบประมาณรายเดือน"
+      },
+      {
+        title:"อู่จำกัด",
+        detail:"ต้องมีเครือข่ายกว้าง"
+      }
+    ],
+
+    fitScore:91,
+    product:"Auto Smart Choice",
+    recommendation:
+      "ซ่อมห้าง มีบริการช่วยเหลือฉุกเฉิน และเบี้ยไม่เกินงบ"
+  }
+
+];
+
+
+const customerList =
+  document.getElementById("customerList");
+
+const brokerSearch =
+  document.getElementById("brokerSearch");
+
+
+function renderCustomers(){
+
+  const query =
+    brokerSearch
+      .value
+      .toLowerCase();
+
+  const result =
+    customers.filter(
+      customer=>
+
+        customer.name
+          .toLowerCase()
+          .includes(query)
+
+        ||
+
+        customer.job
+          .toLowerCase()
+          .includes(query)
+
+    );
+
+
+  customerList.innerHTML =
+    result
+      .map(
+        customer=>
+        `
+          <div class="customer-card">
+
+            <h3>
+              ${customer.name}
+            </h3>
+
+            <p>
+              ${customer.age} ปี •
+              ${customer.job}
+            </p>
+
+            <div class="customer-opportunity">
+
+              <span>
+                ${customer.insight}
+              </span>
+
+              <strong>
+                ${customer.opportunity}%
+              </strong>
+
+            </div>
+
+            <button
+              onclick="openCustomer(${customer.id})"
+            >
+              ดูข้อมูลลูกค้า
+            </button>
+
+          </div>
+        `
+      )
+      .join("");
+
+}
+
+
+/* ================================================= */
+/* BROKER CUSTOMER DETAIL */
+/* ================================================= */
+
+window.openCustomer =
+function(id){
+
+  const customer =
+    customers.find(
+      item=>
+        item.id === id
+    );
+
+  if(!customer) return;
+
+
+  document
+    .getElementById("brokerDetailName")
+    .textContent =
+    customer.name;
+
+
+  document
+    .getElementById("brokerDetailInfo")
+    .textContent =
+    `${customer.age} ปี • ${customer.job}`;
+
+
+  document
+    .getElementById("brokerDetailAvatar")
+    .textContent =
+    customer.name.charAt(0);
+
+
+  document
+    .getElementById("brokerTags")
+    .innerHTML =
+    customer.tags
+      .map(
+        tag=>
+          `<span>${tag}</span>`
+      )
+      .join("");
+
+
+  document
+    .getElementById("mustHaveList")
+    .innerHTML =
+    customer.mustHaves
+      .map(
+        item=>
+        `
+          <div class="requirement-item must">
+
+            <div class="requirement-mark">
+              ✓
+            </div>
+
+            <div>
+
+              <strong>
+                ${item.title}
+              </strong>
+
+              <small>
+                ${item.detail}
+              </small>
+
+            </div>
+
+          </div>
+        `
+      )
+      .join("");
+
+
+  document
+    .getElementById("dealBreakerList")
+    .innerHTML =
+    customer.dealBreakers
+      .map(
+        item=>
+        `
+          <div class="requirement-item deal">
+
+            <div class="requirement-mark">
+              ×
+            </div>
+
+            <div>
+
+              <strong>
+                ${item.title}
+              </strong>
+
+              <small>
+                ${item.detail}
+              </small>
+
+            </div>
+
+          </div>
+        `
+      )
+      .join("");
+
+
+  document
+    .getElementById("requirementFitScore")
+    .textContent =
+    `${customer.fitScore}%`;
+
+
+  document
+    .getElementById("requirementFitText")
+    .textContent =
+    `AI กรองแผนที่ตรง Must-haves และตัดแผนที่ชน Deal Breakers ออกแล้ว`;
+
+
+  document
+    .getElementById("brokerRecommendedProduct")
+    .textContent =
+    customer.product;
+
+
+  document
+    .getElementById("brokerRecommendedReason")
+    .textContent =
+    customer.recommendation;
+
+
+  document
+    .getElementById("brokerRecommendationScore")
+    .textContent =
+    `${customer.fitScore}%`;
+
+
+  document
+    .getElementById("brokerRequirementSummary")
+    .textContent =
+    `Must-haves ${customer.mustHaves.length} ข้อ • Deal Breakers ${customer.dealBreakers.length} ข้อ • ผ่านการกรองแล้ว`;
+
+
+  showPage(
+    "brokerDetail"
+  );
+
+};
+
+
+brokerSearch.addEventListener(
+  "input",
+  renderCustomers
+);
+
+
+renderCustomers();
+
+
+/* เปิดลูกค้าคนแรกเป็นข้อมูล Default ของหน้า Detail */
+openCustomerDataDefault();
+
+
+function openCustomerDataDefault(){
+
+  const customer =
+    customers[0];
+
+
+  document
+    .getElementById("mustHaveList")
+    .innerHTML =
+    customer.mustHaves
+      .map(
+        item=>
+        `
+          <div class="requirement-item must">
+
+            <div class="requirement-mark">
+              ✓
+            </div>
+
+            <div>
+
+              <strong>
+                ${item.title}
+              </strong>
+
+              <small>
+                ${item.detail}
+              </small>
+
+            </div>
+
+          </div>
+        `
+      )
+      .join("");
+
+
+  document
+    .getElementById("dealBreakerList")
+    .innerHTML =
+    customer.dealBreakers
+      .map(
+        item=>
+        `
+          <div class="requirement-item deal">
+
+            <div class="requirement-mark">
+              ×
+            </div>
+
+            <div>
+
+              <strong>
+                ${item.title}
+              </strong>
+
+              <small>
+                ${item.detail}
+              </small>
+
+            </div>
+
+          </div>
+        `
+      )
+      .join("");
+
+}
+
+
+function showToast(message){
+
+  const toast =
+    document.getElementById("toast");
+
+  toast.textContent =
+    message;
+
+  toast.classList.add(
+    "show"
+  );
+
+  clearTimeout(
+    window.toastTimer
+  );
+
+  window.toastTimer =
+    setTimeout(
+      ()=>{
+
+        toast.classList.remove(
+          "show"
+        );
+
+      },
+      2300
+    );
+
+}
+
+
+showPage("home");
+</script>
+
+</body>
+</html>
